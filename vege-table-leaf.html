@@ -1,0 +1,104 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="vege-table-leaf" extends="td" attributes="type value">
+
+  <template>
+    <template if="{{ !specialType }}"><div>{{ stringValue }}</div></template>
+
+    <template if="{{ specialType }}">
+      <template if="{{ type == 'json' }}">
+        <pre><code language="json">{{ stringValue }}</code></pre>
+      </template>
+
+      <template if="{{ type == 'html' }}">
+        <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
+        <!-- TODO: button to show HTML in modal -->
+      </template>
+
+      <template if="{{ type == 'xml' }}">
+        <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
+        <!-- TODO: button to show HTML in modal -->
+      </template>
+
+      <template if="{{ type == 'url' }}">
+        <a href="{{ value }}" target="_blank">{{ value }}</a>
+      </template>
+
+      <template if="{{ type == 'object' }}">
+        <object data="{{ value }}"></object>
+      </template>
+
+      <template if="{{ type == 'element' }}">
+        <!-- TODO -->
+      </template>
+    </template>
+
+    <!-- TODO -->
+    <div id="element"></div>
+  </template>
+
+  <script>
+    Polymer('vege-table-leaf', {
+      value: null,
+      stringValue: null,
+      type: '',
+      specialType: true,
+      specialTypes: ['json', 'html', 'xml', 'url', 'object', 'element'],
+      typeChanged: function() {
+        this.specialType = (this.specialTypes.indexOf(this.type) !== -1);
+      },
+      valueChanged: function() {
+        this.stringValue = this.convert();
+
+        if (this.type == 'element') {
+          this.$.element.innerHTML = '';
+          this.$.element.appendChild(this.stringValue);
+        }
+      },
+      convert: function() {
+        if (this.value === null || this.value === undefined) {
+          return null;
+        }
+
+        switch (this.type) {
+          case 'json':
+          return JSON.stringify(this.value, null, '  ');
+
+          case 'html':
+          return '[html]';
+
+          case 'xml':
+          return '[xml]';
+
+          case 'number':
+          return Math.round(this.value);
+
+          case 'list':
+          return this.value ? this.value.join(',\n') : null;
+
+          case 'date':
+          return this.value.toLocaleDateString(); // TODO: format
+
+          case 'element':
+          var element = document.createElement(this.value[0]);
+
+          var attributes = this.value[1];
+          Object.keys(attributes).forEach(function(key) {
+            element[key] = attributes[key];
+          });
+
+          return element;
+
+          //this.$.element.appendChild(element);
+          //return;
+
+          //var blob = new Blob([div.innerHTML], { type: 'text/html' });
+          //return URL.createObjectURL(blob);
+
+          default:
+          return this.value;
+        }
+      }
+    });
+  </script>
+</polymer-element>

@@ -1,0 +1,144 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- code editing -->
+<link rel="import" href="../code-mirror/code-mirror.html">
+
+<!-- markdown display -->
+<link rel="import" href="../marked-element/marked-element.html">
+
+<!-- syntax highlighting -->
+<link rel="import" href="../syntax-highlight/syntax-highlight.html">
+
+<polymer-element name="doc-leaf" attributes="leaf leaves items editing db">
+  <template>
+    <link rel="stylesheet" href="doc-leaf.css">
+
+    <!-- viewing -->
+    <template if="{{ !editing }}">
+      <div class="row">
+        <div class="col-md-4">
+          <h3 class="leaf-title">
+            <marked-element text="{{ leaf.title }}"></marked-element>
+          </h3>
+
+          <marked-element text="{{ leaf.description }}"></marked-element>
+        </div>
+
+        <div class="col-md-8">
+          <template if="{{ leaf.fetch }}">
+            <pre is="syntax-highlight" language="javascript" content="{{ leaf.fetch }}"></pre>
+          </template>
+
+          <span class="label label-info label-type-{{ leaf.type }}">{{ leaf.type }}</span>
+
+          <template if="{{ db }}">
+            <div class="form-actions pull-right">
+              <button class="btn btn-default" on-click="{{ openEditor }}">Edit</button>
+              <button class="btn btn-danger" on-click="{{ removeLeaf }}">Remove</button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+
+    <!-- editing -->
+    <template if="{{ editing }}" ref="leaf-form">
+      <form on-submit="{{ closeEditor }}">
+
+        <!-- title -->
+        <div class="form-group">
+          <label for="input-title">Title</label>
+
+          <input id="input-title" type="text" value="{{ editing.title }}"
+                 class="form-control" required>
+        </div>
+
+        <!-- index -->
+        <!--
+        <div class="form-group">
+          <label for="input-index">Index</label>
+
+          <input id="input-index" type="number" value="{{ editing.index }}">
+        </div>
+        -->
+
+        <div class="row">
+          <!-- type -->
+          <div class="col-md-6">
+
+            <!-- type -->
+            <div class="form-group">
+              <label for="input-type">Type</label>
+
+              <select id="input-type" class="form-control"
+                      value="{{ editing.type }}" required>
+                <option></option>
+                <option value="identifier">Identifier</option>
+                <option value="text">Text</option>
+                <option value="longtext">Long Text</option>
+                <option value="number">Number</option>
+                <option value="float">Float</option>
+                <option value="boolean">Boolean</option>
+                <option value="html">HTML</option>
+                <option value="xml">XML</option>
+                <option value="json">JSON</option>
+                <option value="url">URL</option>
+                <option value="date">Date</option>
+                <option value="element">Element</option>
+                <option value="object">Object</option>
+                <option value="list">List</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- depends -->
+          <div class="col-md-6">
+
+            <div class="form-group">
+              <label for="input-depends">Depends</label>
+
+              <select id="input-depends" class="form-control"
+                      value="{{ editing.depends }}" multiple size="5">
+                <option>seed</option>
+
+                <template repeat="{{ leaves }}">
+                  <option>{{ name }}</option>
+                </template>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- fetch -->
+        <div class="form-group">
+          <label for="fetch">Fetch</label>
+
+          <code-mirror value="{{ editing.fetch }}" mode="javascript" lineNumbers="true"></code-mirror>
+        </div>
+
+        <!-- description -->
+        <div class="form-group">
+          <label for="description">Description</label>
+
+          <code-mirror value="{{ editing.description }}" mode="markdown" lineNumbers="true" lineWrapping="true"></code-mirror>
+        </div>
+
+        <!-- actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-default" on-click="{{ cancelEditor }}">Cancel</button>
+          <button type="button" class="btn btn-warning" on-click="{{ generatePreviews }}">Preview</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+
+      <!-- previews -->
+      <template repeat="{{ preview in previews }}">
+        <pre class="leaf-preview leaf-preview-{{ leaf.type }}"><code>{{ preview }}</code></pre>
+      </template>
+    </template>
+  </template>
+
+  <script src="doc-leaf.js"></script>
+</polymer-element>

@@ -1,0 +1,75 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- syntax highlighting -->
+<link rel="import" href="../syntax-highlight/syntax-highlight.html">
+
+<!-- code editing -->
+<link rel="import" href="../code-mirror/code-mirror.html">
+
+<!-- csv importing -->
+<link rel="import" href="../csv-parser/csv-parser.html">
+
+<link rel="stylesheet" href="seed-harvester.css">
+
+<polymer-element name="seed-harvester" attributes="seed db progress">
+  <template>
+    <template if="{{ progress == 'loading' }}">
+      <div class="alert alert-info">Loading&hellip;</div>
+    </template>
+
+    <!-- viewing -->
+    <template if="{{ !editing }}">
+      <div>
+        <span class="pull-right label label-info
+          label-type-{{ seed.language }}">{{ seed.language }}</span>
+
+        <h3>Seeds</h3>
+
+        <template if="{{ seed.data }}">
+            <pre is="syntax-highlight" id="fetch"
+                 language="{{ seed.language }}" content="{{ seed.data }}"></pre>
+        </template>
+
+        <template if="{{ db }}">
+          <div>
+            <button class="btn btn-primary" on-click="{{ openEditor }}">Edit seeds</button>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- editing -->
+    <template if="{{ editing }}">
+      <form on-submit="{{ closeEditor }}">
+        <div class="form-group">
+          <label for="language">Type</label>
+
+          <select id="language" value="{{ editing.language }}">
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+            <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
+          <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
+
+          <div class="checkbox">
+            <label><input type="checkbox" checked="{{ editing.replace }}"> Replace existing items</label>
+          </div>
+        </div>
+      </form>
+    </template>
+
+    <template if="{{ error }}">
+      <div class="alert alert-error">{{ error }}</div>
+    </template>
+  </template>
+
+  <script src="seed-harvester.js"></script>
+</polymer-element>

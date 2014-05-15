@@ -1,0 +1,59 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="doc-leaf.html">
+
+<polymer-element name="leaf-builder" attributes="items leaves fields db progress">
+  <template>
+    <link rel="stylesheet" href="leaf-builder.css">
+
+    <template if="{{ progress == 'loading' }}">
+      <div class="alert alert-info">Loading&hellip;</div>
+    </template>
+
+    <template repeat="{{ leaf in leaves }}">
+      <doc-leaf
+        class="doc-leaf"
+        db="{{ db }}"
+        leaf="{{ leaf }}"
+        leaves="{{ leaves }}"
+        items="{{ items }}"
+        on-leaf-removed="{{ removeLeaf }}"></doc-leaf>
+    </template>
+
+    <template if="{{ db }}">
+      <div class="panel-body">
+        <template if="{{ !adding }}">
+          <template if="{{ fields.length }}">
+            <h3>Available leaves</h3>
+
+            <div class="list-group suggested-leaves">
+              <template repeat="{{ field, index in fields }}">
+                <div
+                  class="list-group-item suggested-leaf"
+                  data-field-index="{{ index }}"
+                  on-click="{{ addSuggestedLeaf }}">
+                  <span class="badge">{{ field.name }}</span>
+                  {{ field.title }}</div>
+              </template>
+            </div>
+          </template>
+
+          <div class="form-actions">
+            <button type="button"
+              class="btn btn-primary"
+              on-click="{{ newLeaf }}">Add a leaf</button>
+          </div>
+        </template>
+
+        <template if="{{ adding }}">
+          <doc-leaf
+            editing="{{ adding }}"
+            leaves="{{ leaves }}"
+            items="{{ items }}"
+            on-leaf-added="{{ addLeaf }}"></doc-leaf>
+        </template>
+      </div>
+    </template>
+  </template>
+  <script src="leaf-builder.js"></script>
+</polymer-element>

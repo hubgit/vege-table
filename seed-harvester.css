@@ -1,0 +1,11 @@
+pre {
+  font-size: 90%;
+}
+
+pre span.operator {
+  background-color: transparent !important;
+}
+
+pre code {
+  text-shadow: none !important;
+}

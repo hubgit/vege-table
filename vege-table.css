@@ -1,0 +1,144 @@
+section {
+  margin-bottom: 2rem;
+}
+
+table {
+  min-width: 100%;
+  width: auto !important;
+  max-width: 5000px !important;
+}
+
+th {
+  padding-right: 10px;
+  background: #fff;
+}
+
+th, td {
+  font-size: 90%;
+  padding: 2px 5px;
+  vertical-align: top;
+  overflow: auto;
+  min-width: 10em;
+}
+
+/* TODO: collapse to icon */
+td pre {
+  max-height: 10em;
+  min-width: 10em;
+  max-width: 30em;
+  overflow-y: auto;
+  overflow-x: auto;
+  font-size: 80%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+td pre code {
+  white-space: pre;
+}
+
+td div {
+  max-height: 10em;
+  overflow: auto;
+}
+
+caption {
+  text-align: left;
+}
+
+caption div {
+  margin-bottom: 10px;
+}
+
+caption input {
+  max-width: 30em;
+}
+
+td object {
+  max-width: 20em;
+}
+
+tbody > tr:nth-of-type(odd) > td {
+  background-color: #f9f9f9;
+}
+
+tbody > tr:nth-of-type(even) > td {
+  background-color: white;
+}
+
+tfoot td {
+  background-color: white;
+}
+
+tfoot td div {
+  max-height: 20em;
+  overflow: auto;
+}
+
+pre {
+  border-color: #eee;
+  box-shadow: 0 1px 4px -2px #777;
+  border-radius: 0;
+  padding: 15px;
+}
+
+.table-actions th,
+.table-actions td {
+  white-space: nowrap;
+}
+
+.CodeMirror pre {
+  box-shadow: none;
+}
+
+input[type=file] {
+  display: inline-block;
+}
+
+.leaf-title .badge {
+  margin-bottom: 0;
+}
+
+.leaf-type-text {
+  min-width: 10em;
+}
+
+.leaf-type-list {
+  min-width: 20em;
+}
+
+.leaf-type-list div {
+  white-space: pre-line;
+}
+
+.leaf-type-longtext {
+  min-width: 20em;
+}
+
+.leaf-type-json {
+  min-width: 15em;
+}
+
+.summaries .list-group {
+  margin: 0;
+  min-width: 10em;
+}
+
+.list-group-item {
+  padding: 5px;
+  background: #F3F3F3;
+  clear: both;
+}
+
+.panel {
+  overflow-x: auto;
+}
+
+.panel h2,
+.panel h3:first-of-type {
+  margin-top: 0;
+}
+
