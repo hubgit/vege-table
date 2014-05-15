@@ -24,11 +24,11 @@ Alternatively - or if you'd like to help with development - follow the full inst
 
 1. Make sure you have [Bower](http://bower.io/) installed.
 1. Create a new project folder, and run `bower init`.
-1. Install vege-table and its dependencies: `bower install hubgit/vege-table --save`
+1. Install vege-table and its dependencies: `bower install vege-table --save`
 1. Create an `index.html` file.
 1. Include the [Polymer](http://www.polymer-project.org) platform: `<script src="bower_components/platform/platform.js"></script>`
 1. Use [an HTML import](http://www.polymer-project.org/platform/html-imports.html) to import the vege-table element: `<link rel="import" href="bower_components/vege-table/vege-table.html">`
-1. Add the vege-table element to the page: `<vege-table db="your-database-name"></vege-table>`. Note that the “db” value should be a unique database identifier.
+1. Add the vege-table element to the page: `<vege-table db="your-database-name"></vege-table>`. Note that the “db” value should be a unique database identifier for each project.
 1. Start a web server in the project folder: `python -m SimpleHTTPServer 9000` and open [http://localhost:9000/](http://localhost:9000/) in a web browser (ideally the very latest version of Chrome or Firefox).
 
 Now you can add some seeds and some leaves to create your table.
