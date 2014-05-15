@@ -1,0 +1,49 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 2rem;
+}
+
+article {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+header p {
+  font-size: 120%;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 100;
+  margin: 0;
+}
+
+h2 {
+  font-size: 200%;
+  font-weight: 400;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+figure {
+  margin: 1rem;
+}
+
+figure img {
+  max-width: 100%;
+  display: block;
+}
+
+.danger {
+  color: red;
+}
+
+.number {
+  background: #eed;
+  border-radius: 10em;
+  text-align: center;
+  padding: 0 10px;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: text-top;
+}
