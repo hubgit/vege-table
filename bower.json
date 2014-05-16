@@ -19,7 +19,7 @@
     "code-mirror": "hubgit/code-mirror#master",
     "csv-parser": "hubgit/csv-parser#master",
     "web-resource": "hubgit/web-resource#master",
-    "pouchdb": "pouchdb/pouchdb#~2.2.0",
+    "pouch-db": "hubgit/pouch-db#master",
     "es6-promise": "jakearchibald/es6-promise#~1.0.0"
   }
 }
