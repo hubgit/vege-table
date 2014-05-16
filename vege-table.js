@@ -317,27 +317,49 @@ Polymer('vege-table', {
         fetch: 'return item.seed.' + key,
         title: titleCase(key),
         depends: ['seed'],
-        type: this.guessType(key)
+        type: this.guessType(key, item.seed[key])
       });
     }.bind(this));
   },
 
-  guessType: function(key) {
-    switch (key) {
-    case 'id':
-      return 'identifier';
+  guessType: function(key, value) {
+    var stringType = Object.prototype.toString.call(value);
 
-    case 'title':
-      return 'longtext';
+    switch (stringType) {
+      case '[object Date]':
+        return 'date';
 
-    default:
-      // guess at plurals
-      if (key[key.length - 1] === 's') {
+      case '[object Array]':
         return 'list';
-      }
 
-      return 'string';
+      case '[object Number]':
+        return 'number';
+
+      case '[object Object]':
+        return 'json';
+
+      default:
+        if (stringType === '[object String]' && value.length > 50) {
+          return 'longtext';
+        }
+
+        switch (key) {
+          case 'id':
+            return 'identifier';
+
+          case 'title':
+            return 'longtext';
+
+          default:
+            // guess at plurals
+            if (key[key.length - 1] === 's') {
+              return 'list';
+            }
+
+            return null;
+        }
     }
+
   },
 
   clearAddItems: function(event, items) {
