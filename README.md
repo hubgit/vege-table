@@ -40,7 +40,6 @@ To publish a table, export the data and description files and move them (as `dat
 There are several important things to bear in mind:
 
 * There are bugs (both known and unknown) - this is still a very early release, and it uses some technologies that are not yet fully stable.
-* The main existing bug is conflicts when saving items via PouchDB - often items don’t get saved properly. If the table gets in a mess, export the description file, change the database name (the `db` attribute on the vege-table element) to start afresh and re-import the description file.
 * __To get maximum performance, switch on Object.observe__: in Chrome 34, this is done by enabling “experimental JavaScript” in chrome://extensions - without Object.observe, polling objects for changes can get slow when there are a lot of items.
 * Only some services add the CORS `Access-Control-Allow-Origin` header to their resources, so often resources cannot be fetched directly. To work around this (and providing benefits in other ways, such as caching), pass all request through [cache-proxy](https://github.com/hubgit/cache-proxy). View source on [an example table](examples/this-is-my-jam/) to see how to use `Request.prototype.prepare` to manipulate the URL before the request is sent.
 * By default, IndexedDB (where the data is stored) is allowed to use up to 10% of the free disk space. After that, properties may start silently going missing and things may stop saving. TODO: investigate whether a browser extension will help with this.
