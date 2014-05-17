@@ -63,8 +63,10 @@ There are several important things to bear in mind:
 * Google Sheets / Apps Script / Fusion Tables
 * [Tabulator](http://www.w3.org/2005/ajar/tab) / Tim Berners-Lee
 * [Wolfram Language](http://www.wolfram.com/language/) / Stephen Wolfram
+* [dat](http://dat-data.com/) / Max Ogden
 * [R](http://www.r-project.org/) / [Hadley Wickham](http://had.co.nz/)
 * [iPython Notebook](http://ipython.org/notebook.html)
 * [ScraperWiki](https://scraperwiki.com/)
+* [import.io](https://import.io)
 * Discussions in the [W3C CSV on the Web Working Group](http://www.w3.org/2013/csvw/), and the work of group chairs Jeni Tennison and Dan Brickley.
 
