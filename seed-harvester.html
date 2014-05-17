@@ -32,7 +32,11 @@
 
         <template if="{{ db }}">
           <div>
+            <button class="btn btn-danger" on-click="{{ clearItems }}">Clear items</button>
             <button class="btn btn-primary" on-click="{{ openEditor }}">Edit seeds</button>
+            <template if="{{ seed.data }}">
+              <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
+            </template>
           </div>
         </template>
       </div>
@@ -48,20 +52,26 @@
             <option value="csv">CSV</option>
             <option value="json">JSON</option>
             <option value="javascript">JavaScript</option>
+            <option value="url">URL</option>
           </select>
         </div>
 
-        <div class="form-group">
-            <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
-        </div>
+        <template if="{{ editing.language != 'url' }}">
+          <div class="form-group">
+              <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
+          </div>
+        </template>
+
+        <template if="{{ editing.language == 'url' }}">
+          <!-- TODO: autocomplete/search -->
+          <div class="form-group">
+            <input type="url" class="form-control" value="{{ editing.url }}" placeholder="http://&hellip;">
+          </div>
+        </template>
 
         <div class="form-actions">
           <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
           <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
-
-          <div class="checkbox">
-            <label><input type="checkbox" checked="{{ editing.replace }}"> Replace existing items</label>
-          </div>
         </div>
       </form>
     </template>

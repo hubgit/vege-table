@@ -8,6 +8,7 @@ Polymer('seed-harvester', {
   ready: function() {
     this.seed = this.seed || {
       data: '',
+      url: '',
       replace: true,
       language: 'javascript'
     };
@@ -42,6 +43,10 @@ Polymer('seed-harvester', {
     this.error = 'Response code: ' + e.xhr.status + ' from ' + e.request.originalURL;
   },
 
+  clearItems: function() {
+    this.fire('clear-items');
+  },
+
   addItems: function(items) {
     console.log('adding items', items ? items.length : items);
 
@@ -53,7 +58,7 @@ Polymer('seed-harvester', {
       return { seed: item };
     });
 
-    this.fire(this.seed.replace ? 'clear-add-items': 'add-items', seeds);
+    this.fire('add-items', seeds);
   },
 
   saveSeeds: function(event) {

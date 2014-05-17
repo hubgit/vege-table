@@ -339,37 +339,33 @@ Polymer('vege-table', {
         return 'json';
 
       default:
+        switch (key.toLowerCase()) {
+          case 'id':
+            return 'identifier';
+
+          case 'url':
+            return 'url';
+
+          case 'title':
+            return 'longtext';
+        }
+
         if (stringType === '[object String]' && value.length > 50) {
           return 'longtext';
         }
 
-        switch (key) {
-          case 'id':
-            return 'identifier';
-
-          case 'title':
-            return 'longtext';
-
-          default:
-            // guess at plurals
-            if (key[key.length - 1] === 's') {
-              return 'list';
-            }
-
-            return null;
-        }
+        return null;
     }
 
   },
 
-  clearAddItems: function(event, items) {
-    console.log('clearAddItems', items.length);
+  clearItems: function() {
+    console.log('deleting items');
 
     this.$.storage.deleteAllItems().then(function(result) {
       console.log('deleted items', result.length);
       this.items.length = 0;
       this.displayItems.length = 0;
-      this.addItems(event, items);
     }.bind(this), function(err) {
       console.error('error deleting items', err);
     });
@@ -405,16 +401,13 @@ Polymer('vege-table', {
     }
   },
 
-  updateItems: function(event, details) {
-    return this.$.storage.updateItems(details);
-  },
-
   updateItem: function(event, details) {
     // TODO: gather and run updateItems on a timeout?
     return this.$.storage.updateItem(details);
   },
 
   saveLeaves: function() {
+    console.log('saving leaves');
     this.leaves.forEach(function(leaf) {
       this.updateLeaf(null, leaf);
     }.bind(this));
@@ -442,10 +435,14 @@ Polymer('vege-table', {
 
   updateLeaf: function(event, leaf) {
     this.$.storage.updateLeaf(leaf).then(function() {
+      console.log('saved leaf', leaf.name);
+
       if (event) {
         this.$.miner.updateItems(leaf);
       }
-    }.bind(this));
+    }.bind(this), function(err) {
+      console.error('error saving leaf', leaf.name, err);
+    });
   },
 
   nextIndex: function() {
@@ -575,7 +572,7 @@ Polymer('vege-table', {
     this.progress.seed = 'loaded';
 
     if (this.db) {
-      this.$.storage.saveSeed();
+      this.saveSeed();
     }
 
     data.leaves.forEach(function(leaf) {
@@ -588,6 +585,8 @@ Polymer('vege-table', {
         this.addLeaf(null, leaf);
       }
     }.bind(this));
+
+    this.saveLeaves();
 
     this.updateFields();
 

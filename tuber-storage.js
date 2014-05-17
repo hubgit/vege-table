@@ -1,4 +1,4 @@
-/*globals Polymer:false, PouchDB:false, console:false */
+/*globals Polymer:false, PouchDB:false, console:false, Queue:false */
 
 'use strict';
 
@@ -7,6 +7,8 @@ Polymer('tuber-storage', {
   ready: function() {
     this.domSerializer = new XMLSerializer();
     this.domParser = new DOMParser();
+    this.queue = new Queue({ name: 'storage' });
+    this.queued = {};
   },
   storageChanged: function() {
     if (this.storage) {
@@ -28,10 +30,10 @@ Polymer('tuber-storage', {
     var request = this.db.put(doc);
 
     request.then(function() {
-      console.log('saved', doc._id);
-    }, function(result) {
-      console.error('error saving', doc._id, result);
-    });
+      console.log('saved');
+    }, function(err) {
+      console.error('error saving', doc._id, err);
+    }.bind(this));
 
     return request;
   },
@@ -121,7 +123,7 @@ Polymer('tuber-storage', {
       console.log('added items', result.length);
 
       items.forEach(function(item, index) {
-        item._rev = result[index]._rev;
+        item._rev = result[index].rev;
       }.bind(this));
     }.bind(this), function(err) {
       console.error('error adding item', err);
@@ -132,31 +134,22 @@ Polymer('tuber-storage', {
   deleteAllItems: function() {
     console.log('deleteAllItems');
 
-    var dryItems = this.items.map(function(item) {
-      item._deleted = true;
-
-      return this.dehydrateItem(item, true);
-    }.bind(this));
-
-    console.log(dryItems.length, 'items to delete');
-
-    return this.db.bulkDocs(dryItems);
-  },
-  updateItems: function(items) {
-    var dryItems = items.map(function(item) {
-      return this.dehydrateItem(item, true);
+    var itemsToDelete = this.items.map(function(item) {
+      return {
+        _deleted: true,
+        _id: item._id,
+        _rev: item._rev
+      };
     });
 
-    var request = this.db.bulkDocs(dryItems);
+    console.log('deleting items', itemsToDelete.length);
 
-    request.then(function(result) {
-      items.forEach(function(item, index) {
-        item._rev = result[index]._rev;
-      });
+    var request = this.db.bulkDocs(itemsToDelete);
 
-      console.log('saved items', result.length);
-    }.bind(this), function(err) {
-      console.error('error updating items', err);
+    request.then(function() {
+      console.log('deleted items');
+    }, function(err) {
+      console.error(err);
     });
 
     return request;
@@ -166,22 +159,34 @@ Polymer('tuber-storage', {
       return;
     }
 
-    var dryItem = this.dehydrateItem(item, true);
+    // don't queue an item for updates if it's already on the queue
+    if (this.queued[item._id]) {
+      return;
+    }
 
-    var request = this.put(dryItem);
+    this.queued[item._id] = true;
 
-    // TODO: _rev of item gets out of sync with _rev of dryItem by the time they're saved?
+    // queue the updates, so that the latest version of the item gets serialized
+    return new Promise(function(resolve, reject) {
+      this.queue.add(function() {
+        this.queued[item._id] = false;
+        var dryItem = this.dehydrateItem(item, true);
 
-    request.then(function(result) {
-      item._rev = result.rev;
-    }.bind(this), function(err) {
-      console.error('error updating item', err, dryItem);
-      this.db.get(item._id, { conflicts: true }).then(function(result) {
-        console.log('conflict', result);
-      });
+        var request = this.put(dryItem);
+
+        request.then(function(result) {
+         item._rev = result.rev;
+          resolve(result);
+        }, function(err) {
+          this.queued[item._id] = false;
+          console.error('error updating item', err, dryItem);
+          this.queue.start();
+          reject(err);
+        }.bind(this));
+
+        return request;
+      }.bind(this));
     }.bind(this));
-
-    return request;
   },
   loadLeaves: function() {
     console.log('loading leaves');
@@ -217,6 +222,8 @@ Polymer('tuber-storage', {
   addLeaf: function(leaf) {
     leaf.doctype = 'leaf';
     leaf._id = 'leaf_' + leaf.name;
+
+    delete leaf._rev;
 
     var request = this.put(leaf);
 
