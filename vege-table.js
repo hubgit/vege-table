@@ -193,48 +193,62 @@ Polymer('vege-table', {
 
     var sortFunction;
 
-    var sortText = function(a, b) {
-      var av = a[leafName];
-      var bv = b[leafName];
+    switch (leaf.type) {
+      case 'list':
+        throw new Error('No list sorting');
 
-      if (av === null && bv === null) return 0;
-      if (av === null) return -1;
-      if (bv === null) return 1;
+      case 'number':
+      case 'float':
+      case 'date':
+        sortFunction = function(a, b) {
+          return descending ? b - a : a - b;
+        };
+        break;
 
-      if (av === bv) {
+      default:
+        sortFunction = function(a, b) {
+          if (a === b) {
+            return 0;
+          }
+
+          if (a > b) {
+            return descending ? -1 : 1;
+          }
+
+          if (a < b) {
+            return descending ? 1 : -1;
+          }
+        };
+        break;
+    }
+
+    // sort null items to the bottom
+    var sortNull = function(a, b) {
+      var aNull = (a === null || a === undefined || isNaN(a));
+      var bNull = (b === null || b === undefined || isNaN(b));
+
+      if (aNull && bNull) {
         return 0;
       }
 
-      if (av > bv) {
+      if (aNull) {
         return 1;
       }
 
-      if (av < bv) {
+      if (bNull) {
         return -1;
       }
+
+      return 0;
     };
 
-    switch (leaf.type) {
-    case 'number':
-    case 'float':
-      sortFunction = function(a, b) {
-        return a[leafName] - b[leafName];
-      };
-      break;
 
-    case 'list':
-      throw new Error('No list sorting');
+    this.items.sort(function(a, b) {
+      var av = a[leafName];
+      var bv = b[leafName];
 
-    default:
-      sortFunction = sortText;
-      break;
-    }
-
-    this.items.sort(sortFunction);
-
-    if (descending) {
-      this.items.reverse();
-    }
+      return sortNull(av, bv) || sortFunction(av, bv);
+    });
 
     if (this.filter) {
       this.filterItems();
