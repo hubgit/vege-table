@@ -16,9 +16,6 @@ Polymer('vege-table', {
   summarised: false,
 
   ready: function() {
-    // TODO: save column order, sort leaves by indexOf leaf name in column order?
-    this.columns = [];
-
     this.filter = this.filter || null;
 
     this.seed = {
@@ -92,12 +89,8 @@ Polymer('vege-table', {
       return a.index - b.index;
     });
 
-    this.setColumnOrder();
-  },
-
-  setColumnOrder: function() {
-    this.columns = this.leaves.map(function(leaf) {
-      return leaf.name;
+    this.leaves.forEach(function(leaf, index) {
+      leaf.index = index;
     });
   },
 
@@ -253,16 +246,7 @@ Polymer('vege-table', {
 
     var leafName = event.target.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
-
-    this.columns.splice(leaf.index, 1);
-
-    var leafshift = right ? 1 : -1;
-    this.columns.splice(leaf.index + leafshift, 0, leaf.name);
-
-    this.leaves.forEach(function(leaf) {
-      leaf.index = this.columns.indexOf(leaf.name);
-    }.bind(this));
-
+    leaf.index += right ? 1.5 : -1.5;
     this.sortLeavesByIndex();
     this.saveLeaves();
   },
@@ -434,6 +418,7 @@ Polymer('vege-table', {
   },
 
   updateLeaf: function(event, leaf) {
+    console.log(leaf);
     this.$.storage.updateLeaf(leaf).then(function() {
       console.log('saved leaf', leaf.name);
 
@@ -586,7 +571,9 @@ Polymer('vege-table', {
       }
     }.bind(this));
 
-    this.saveLeaves();
+    if (this.db) {
+      this.saveLeaves();
+    }
 
     this.updateFields();
 

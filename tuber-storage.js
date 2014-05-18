@@ -19,7 +19,7 @@ Polymer('tuber-storage', {
     var request = this.db.get(id);
 
     request.then(function(result) {
-      console.log('loaded', result.id);
+      //console.log('loaded', result.id);
     }, function(result) {
       console.error('error loading', id, result);
     });
@@ -30,7 +30,7 @@ Polymer('tuber-storage', {
     var request = this.db.put(doc);
 
     request.then(function() {
-      console.log('saved');
+      //console.log('saved');
     }, function(err) {
       console.error('error saving', doc._id, err);
     }.bind(this));
@@ -85,13 +85,7 @@ Polymer('tuber-storage', {
     });
 
     request.then(function(result) {
-      var items = result.rows;
-
-      /*items.sort(function(a, b) {
-        return a.doc.index - b.doc.index;
-      });*/
-
-      items.forEach(function(row) {
+      result.rows.forEach(function(row) {
         var item = this.hydrateItem(row.doc, true);
         this.items.push(item);
         this.fire('item-loaded', item);
@@ -239,6 +233,7 @@ Polymer('tuber-storage', {
     var request = this.put(leaf);
 
     request.then(function(result) {
+      //console.log('saved leaf', leaf.name);
       leaf._rev = result.rev;
     }.bind(this)).catch(function(err) {
       console.error('error updating leaf', err);
