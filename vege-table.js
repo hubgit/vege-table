@@ -432,7 +432,6 @@ Polymer('vege-table', {
   },
 
   updateLeaf: function(event, leaf) {
-    console.log(leaf);
     this.$.storage.updateLeaf(leaf).then(function() {
       console.log('saved leaf', leaf.name);
 
@@ -584,10 +583,6 @@ Polymer('vege-table', {
         this.addLeaf(null, leaf);
       }
     }.bind(this));
-
-    if (this.db) {
-      this.saveLeaves();
-    }
 
     this.updateFields();
 
