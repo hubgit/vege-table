@@ -262,7 +262,10 @@ Polymer('vege-table', {
     var leaf = this.getLeafByName(leafName);
     leaf.index += right ? 1.5 : -1.5;
     this.sortLeavesByIndex();
-    this.saveLeaves();
+
+    if (this.db) {
+      this.saveLeaves();
+    }
   },
 
   loadItems: function() {
