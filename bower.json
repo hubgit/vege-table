@@ -17,7 +17,6 @@
     "marked-element": "hubgit/marked-element#master",
     "syntax-highlight": "hubgit/syntax-highlight#master",
     "code-mirror": "hubgit/code-mirror#master",
-    "csv-parser": "hubgit/csv-parser#master",
     "web-resource": "hubgit/web-resource#master",
     "pouch-db": "hubgit/pouch-db#master",
     "es6-promise": "jakearchibald/es6-promise#~1.0.0"

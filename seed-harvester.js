@@ -1,4 +1,4 @@
-/*globals console:false, CSVParser:false*/
+/*globals console:false, Parsers:false*/
 'use strict';
 
 Polymer('seed-harvester', {
@@ -83,8 +83,10 @@ Polymer('seed-harvester', {
 
       case 'csv':
       // TODO: use csv-parser element
-      // TODO: set delimiter
-      var parser = new CSVParser({ delimiter: this.delimiter });
+      // TODO: set enclosure, etc
+      var parser = new Parsers.CSV({ delimiter: this.delimiter });
+
+      // TODO: normalise field names
 
       data = parser.parse(this.seed.data).results.rows;
       // TODO: log errors, preview?
