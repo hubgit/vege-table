@@ -264,6 +264,10 @@ Polymer('tuber-storage', {
         output[key] = value ? value.toISOString() : null;
         break;
 
+      case 'url':
+        output[key] = value ? value.href : null;
+        break;
+
       case 'html':
       case 'xml':
         try {
@@ -300,6 +304,10 @@ Polymer('tuber-storage', {
       var value = input[key];
 
       switch (leaf.type) {
+      case 'url':
+        item[key] = value ? new URL(value) : null;
+        break;
+
       case 'date':
         item[key] = value ? new Date(value) : null;
         break;

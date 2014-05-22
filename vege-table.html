@@ -146,7 +146,7 @@
               </template>
             </tr>
 
-            <template repeat="{{ summariser in summarisers }}">
+            <template repeat="{{ summariser, summariserIndex in summarisers }}">
               <tr>
                 <th>{{ summariser.label }}</th>
 
@@ -160,13 +160,23 @@
                       <template if="{{ summariser.type == 'list' }}">
                         <div class="list-group">
                           <template repeat="{{ s in summary }}">
-                            <!-- TODO: active filter for list types -->
                             <a href="#"
                               class="leaf-count list-group-item {{ { active: filter.key == summary.leafName &amp;&amp; filter.value == s.key } | tokenList }}"
                               data-leaf-index="{{ summaryIndex + 1 }}"
                               data-filter-value="{{ s.key }}"
                               on-click="{{ filterTable }}"><span class="badge">{{ s.count }}</span>{{ s.key }}</a>
                           </template>
+                        </div>
+
+                        <div>
+                          <button type="button" class="btn btn-default btn-xs"
+                            on-click="{{ exportSummary }}"
+                            data-leaf-index="{{ summaryIndex + 1 }}"
+                            data-summariser-index="{{ summariserIndex }}">Export</button>
+
+                          <button type="button" class="btn btn-default btn-xs"
+                            on-click="{{ exportValues }}"
+                            data-leaf-index="{{ summaryIndex + 1 }}">Export values</button>
                         </div>
                       </template>
                     </template>

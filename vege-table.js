@@ -124,10 +124,10 @@ Polymer('vege-table', {
     var leafName = leaf.name;
     var leafType = leaf.type;
 
-    // TODO: use indexOf leaf name in column order
     var cell = leaf.index - 1; // first column is the heading
 
     this.summarisers.forEach(function(summariser) {
+      console.log(leafType);
       if (summariser.types.indexOf(leafType) !== -1) {
         console.log('summarising', leafName, this.displayItems.length);
 
@@ -136,6 +136,10 @@ Polymer('vege-table', {
         });
 
         var summary = summariser.reduce(values, leafType);
+
+        if (summariser.type == 'list') {
+          summary = summary.slice(0, 25);
+        }
 
         if (typeof summary === 'object') {
           summary.leafName = leafName;
@@ -147,6 +151,36 @@ Polymer('vege-table', {
 
     this.summarised = true;
   },
+
+  exportSummary: function(event, details, sender) {
+    var summariserIndex = sender.getAttribute('data-summariser-index');
+    var leafIndex = sender.getAttribute('data-leaf-index');
+    var summariser = this.summarisers[summariserIndex];
+    var leaf = this.leaves[leafIndex];
+
+    var values = this.displayItems.map(function(item) {
+      return item[leaf.name];
+    });
+
+    var rows = summariser.reduce(values, leaf.type).map(function(row) {
+      return [row.key, row.count];
+    });
+
+    rows.unshift([leaf.name, 'count']);
+
+    this.exportData(rows, 'csv', this.db + '-' + leaf.name + '.csv');
+  },
+
+  exportValues: function(event, details, sender) {
+      var leafIndex = sender.getAttribute('data-leaf-index');
+      var leaf = this.leaves[leafIndex];
+
+      var values = this.displayItems.map(function(item) {
+        return [item[leaf.name]];
+      });
+
+      this.exportData(values, 'csv', this.db + '-' + leaf.name + '.csv');
+    },
 
   getLeafByName: function(leafName) {
     for (var i = 0; i < this.leaves.length; i++) {
@@ -511,7 +545,17 @@ Polymer('vege-table', {
       break;
 
     case 'csv':
-      output = ''; // TODO: generate CSV from data;
+      // generate CSV from data rows
+      output = data.map(function(row) {
+        return row.map(function(cell) {
+          if (cell && typeof cell === 'string' && cell.indexOf('"') !== -1) {
+            return '"' + cell.toString().replace(/"/g, '""') + '"';
+          } else {
+            return cell;
+          }
+        }).join(',');
+      }).join('\n');
+
       this.downloadDataAsFile(output, 'text/csv', filename);
       break;
     }
@@ -716,7 +760,7 @@ Polymer('vege-table', {
       name: 'facets',
       label: 'Facets',
       type: 'list',
-      types: ['number', 'date', 'list', 'text'],
+      types: ['number', 'date', 'list', 'text', 'url'],
       reduce: function(values, leafType) {
         var counts = {};
 
@@ -768,7 +812,7 @@ Polymer('vege-table', {
           return counts[b] - counts[a];
         });
 
-        return keys.slice(0, 20).map(function(key) {
+        return keys.map(function(key) {
           return {
             key: key,
             count: counts[key]
@@ -780,7 +824,7 @@ Polymer('vege-table', {
       name: 'sum',
       label: 'Sum',
       type: 'float',
-      types: ['number'],
+      types: ['number', 'float'],
       reduce: function(values) {
         return values.reduce(function(total, value) {
           return total + (value ? value : 0);
@@ -791,7 +835,7 @@ Polymer('vege-table', {
       name: 'mean',
       label: 'Mean',
       type: 'float',
-      types: ['number'],
+      types: ['number', 'float'],
       reduce: function(values) {
         var sum = 0;
 
@@ -808,7 +852,7 @@ Polymer('vege-table', {
       name: 'median',
       label: 'Median',
       type: 'float',
-      types: ['number'],
+      types: ['number', 'float'],
       reduce: function(values, leafType) {
         if (!values) {
           return;

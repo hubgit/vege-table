@@ -82,9 +82,10 @@ Polymer('seed-harvester', {
       break;
 
       case 'csv':
-      // TODO: use csv-parser element
       // TODO: set enclosure, etc
-      var parser = new Parsers.CSV({ delimiter: this.delimiter });
+      var parser = new Parsers.CSV({
+        delimiter: this.delimiter
+      });
 
       // TODO: normalise field names
 
