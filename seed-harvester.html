@@ -10,6 +10,8 @@
 
 <polymer-element name="seed-harvester" attributes="seed db progress">
   <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+
     <template if="{{ progress == 'loading' }}">
       <div class="alert alert-info">Loading&hellip;</div>
     </template>

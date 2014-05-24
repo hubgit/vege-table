@@ -3,6 +3,9 @@
 <polymer-element name="vege-table-leaf" extends="td" attributes="type value">
 
   <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="vege-table-leaf.css">
+
     <template if="{{ !specialType }}"><div>{{ stringValue }}</div></template>
 
     <template if="{{ specialType }}">

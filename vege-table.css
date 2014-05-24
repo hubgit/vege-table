@@ -21,30 +21,6 @@ th, td {
   min-width: 10em;
 }
 
-/* TODO: collapse to icon */
-td pre {
-  max-height: 10em;
-  min-width: 10em;
-  max-width: 30em;
-  overflow-y: auto;
-  overflow-x: auto;
-  font-size: 80%;
-  border: none;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
-  box-shadow: none;
-}
-
-td pre code {
-  white-space: pre;
-}
-
-td div {
-  max-height: 10em;
-  overflow: auto;
-}
-
 caption {
   text-align: left;
 }
@@ -55,10 +31,6 @@ caption div {
 
 caption input {
   max-width: 30em;
-}
-
-td object {
-  max-width: 20em;
 }
 
 tbody > tr:nth-of-type(odd) > td {

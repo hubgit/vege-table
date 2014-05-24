@@ -4,6 +4,7 @@
 
 <polymer-element name="leaf-builder" attributes="items leaves fields db progress">
   <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="leaf-builder.css">
 
     <template if="{{ progress == 'loading' }}">
@@ -32,11 +33,15 @@
                   class="list-group-item suggested-leaf"
                   data-field-index="{{ index }}"
                   on-click="{{ addSuggestedLeaf }}">
+
                   <span class="badge">{{ field.name }}</span>
+
                   <template if="{{ field.type }}">
                     <span class="badge">{{ field.type }}</span>
                   </template>
-                  {{ field.title }}</div>
+
+                  <span>{{ field.title }}</span>
+                </div>
               </template>
             </div>
           </template>
