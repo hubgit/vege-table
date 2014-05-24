@@ -9,3 +9,8 @@ pre span.operator {
 pre code {
   text-shadow: none !important;
 }
+
+h3 {
+  margin-top: 0;
+  font-weight: 200;
+}

@@ -6,11 +6,10 @@
 <!-- code editing -->
 <link rel="import" href="../code-mirror/code-mirror.html">
 
-<link rel="stylesheet" href="seed-harvester.css">
-
 <polymer-element name="seed-harvester" attributes="seed db progress">
   <template>
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="seed-harvester.css">
 
     <template if="{{ progress == 'loading' }}">
       <div class="alert alert-info">Loading&hellip;</div>

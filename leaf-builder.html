@@ -27,10 +27,9 @@
           <template if="{{ fields.length }}">
             <h3>Available leaves</h3>
 
-            <div class="list-group suggested-leaves">
+            <ul class="list-group suggested-leaves">
               <template repeat="{{ field, index in fields }}">
-                <div
-                  class="list-group-item suggested-leaf"
+                <li class="list-group-item suggested-leaf"
                   data-field-index="{{ index }}"
                   on-click="{{ addSuggestedLeaf }}">
 
@@ -41,9 +40,9 @@
                   </template>
 
                   <span>{{ field.title }}</span>
-                </div>
+                </li>
               </template>
-            </div>
+            </ul>
           </template>
 
           <div class="form-actions">
