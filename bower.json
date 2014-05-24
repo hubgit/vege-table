@@ -19,6 +19,6 @@
     "code-mirror": "hubgit/code-mirror#master",
     "web-resource": "hubgit/web-resource#master",
     "pouch-db": "hubgit/pouch-db#master",
-    "es6-promise": "jakearchibald/es6-promise#~1.0.0"
+    "es6-promise": "components/es6-promise#~1.0.0"
   }
 }
