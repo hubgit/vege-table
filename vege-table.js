@@ -35,6 +35,12 @@ Polymer('vege-table', {
     this.fields = [];
     this.displayItems = [];
 
+    var matches = window.location.search.match(/db=([\w-]+)/);
+
+    if (matches) {
+      this.db = matches[1];
+    }
+
     if (!this.db) {
       this.loadDescriptionFile();
     }
@@ -315,6 +321,38 @@ Polymer('vege-table', {
     }.bind(this));
   },
 
+  titleCase: function(key) {
+    return key.replace(/[\W_]/g, ' ').replace(/([A-Z]+)/, ' $1').replace(/\w\S*/g, function(text) {
+      return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+    }).trim().replace(/\b(html|pdf|url|doi|issn|id)\b/ig, function(matches, text) {
+      return text.toUpperCase();
+    });
+  },
+
+  buildFetch: function(type, key, value) {
+    switch (type) {
+      case 'date':
+        if (!(value instanceof Date)) {
+          key = 'new Date(' + key + ')';
+        }
+        break;
+
+      case 'number':
+        if (!(value instanceof Number)) {
+          key = 'parseInt(' + key + ')';
+        }
+        break;
+
+      case 'float':
+        if (!(value instanceof Number)) {
+          key = 'parseFloat(' + key + ')';
+        }
+        break;
+    }
+
+    return 'return ' + key;
+  },
+
   updateFields: function() {
     if (!this.items.length) {
       return;
@@ -328,14 +366,6 @@ Polymer('vege-table', {
       return leaf.name;
     });
 
-    var titleCase = function(key) {
-      return key.replace(/[\W_]/g, ' ').replace(/([A-Z]+)/, ' $1').replace(/\w\S*/g, function(text) {
-        return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-      }).trim().replace(/\b(html|pdf|url|doi|issn|id)\b/ig, function(matches, text) {
-        return text.toUpperCase();
-      });
-    };
-
     // add each seed property that isn't already a leaf
     Object.keys(item.seed).sort().forEach(function(key) {
       if (leafKeys.indexOf(key) !== -1) {
@@ -347,12 +377,15 @@ Polymer('vege-table', {
         return null;
       }
 
+      var value = item.seed[key];
+      var type = this.guessType(key, value);
+
       this.fields.push({
         name: 'item.seed.' + key,
-        fetch: 'return item.seed.' + key,
-        title: titleCase(key),
+        fetch: this.buildFetch(type, 'item.seed.' + key, value),
+        title: this.titleCase(key),
         depends: ['seed'],
-        type: this.guessType(key, item.seed[key])
+        type: type
       });
     }.bind(this));
   },
@@ -760,21 +793,29 @@ Polymer('vege-table', {
       name: 'facets',
       label: 'Facets',
       type: 'list',
-      types: ['number', 'date', 'list', 'text', 'url'],
+      types: ['number', 'date', 'list', 'counts', 'text', 'url'],
       reduce: function(values, leafType) {
         var counts = {};
 
         var countValues = function(values) {
           values.forEach(function(value) {
+            var increment = 1;
+
             // null or undefined
             if (value === null || value === undefined || value === '') {
               return;
             }
 
             // array
-            if (typeof value === 'object' && value.length) {
+            if (Array.isArray(value)) {
               countValues(value);
               return;
+            }
+
+            if (leafType == 'counts') {
+              console.log(leafType, value)
+              increment = value.count;
+              value = value.name;
             }
 
             switch (leafType) {
@@ -794,7 +835,7 @@ Polymer('vege-table', {
               counts[value] = 0;
             }
 
-            counts[value]++;
+            counts[value] += increment;
           });
         };
 
@@ -820,6 +861,7 @@ Polymer('vege-table', {
         });
       }
     },
+    /*
     {
       name: 'sum',
       label: 'Sum',
@@ -886,5 +928,6 @@ Polymer('vege-table', {
         return (sorted[midpoint] + sorted[midpoint + 1]) / 2;
       }
     }
+    */
   ]
 });

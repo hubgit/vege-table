@@ -82,7 +82,8 @@ input[type=file] {
   min-width: 10em;
 }
 
-.leaf-type-list {
+.leaf-type-list,
+.leaf-type-counts {
   min-width: 20em;
 }
 

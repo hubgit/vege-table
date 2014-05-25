@@ -34,6 +34,17 @@
       <template if="{{ type == 'element' }}">
         <!-- TODO -->
       </template>
+
+      <template if="{{ type == 'counts' }}">
+        <ul class="list-group">
+          <template repeat="{{ item in value }}">
+            <li class="list-group-item">
+              <span class="badge">{{ item.count }}</span>
+              <span>{{ item.name }}</span>
+            </li>
+          </template>
+        </ul>
+      </template>
     </template>
 
     <!-- TODO -->
@@ -46,7 +57,7 @@
       stringValue: null,
       type: '',
       specialType: true,
-      specialTypes: ['json', 'html', 'xml', 'url', 'object', 'element'],
+      specialTypes: ['json', 'html', 'xml', 'url', 'object', 'element', 'counts'],
       typeChanged: function() {
         this.specialType = (this.specialTypes.indexOf(this.type) !== -1);
       },
@@ -91,6 +102,9 @@
           });
 
           return element;
+
+          //case 'url':
+          //return this.value.href;
 
           //this.$.element.appendChild(element);
           //return;

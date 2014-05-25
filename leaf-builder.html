@@ -27,22 +27,29 @@
           <template if="{{ fields.length }}">
             <h3>Available leaves</h3>
 
-            <ul class="list-group suggested-leaves">
-              <template repeat="{{ field, index in fields }}">
-                <li class="list-group-item suggested-leaf"
-                  data-field-index="{{ index }}"
-                  on-click="{{ addSuggestedLeaf }}">
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="list-group suggested-leaves">
+                  <template repeat="{{ field, index in fields }}">
+                    <li class="list-group-item suggested-leaf"
+                      data-field-index="{{ index }}"
+                      on-click="{{ addSuggestedLeaf }}">
 
-                  <span class="badge">{{ field.name }}</span>
+                      <span class="badge">{{ field.name }}</span>
 
-                  <template if="{{ field.type }}">
-                    <span class="badge">{{ field.type }}</span>
+                      <template if="{{ field.type }}">
+                        <span class="badge">{{ field.type }}</span>
+                      </template>
+
+                      <span>{{ field.title }}</span>
+                    </li>
                   </template>
+                </ul>
+              </div>
 
-                  <span>{{ field.title }}</span>
-                </li>
-              </template>
-            </ul>
+              <div class="col-md-6">
+              </div>
+            </div>
           </template>
 
           <div class="form-actions">

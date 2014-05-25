@@ -25,3 +25,9 @@ div {
 object {
   max-width: 20em;
 }
+
+.list-group-item {
+  padding: 5px;
+  background: #F3F3F3;
+  clear: both;
+}

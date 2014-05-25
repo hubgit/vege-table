@@ -154,11 +154,11 @@
                 <template repeat="{{ summary, summaryIndex in summariser.summaries }}">
                   <td>
                     <template if="{{ summary }}">
-                      <template if="{{ summariser.type != 'list' }}">
+                      <template if="{{ summariser.type != 'list' &amp;&amp; summariser.type != 'counts' }}">
                         <div>{{ summary }}</div>
                       </template>
 
-                      <template if="{{ summariser.type == 'list' }}">
+                      <template if="{{ summariser.type == 'list' || summariser.type == 'counts' }}">
                         <div class="list-group">
                           <template repeat="{{ s in summary }}">
                             <a href="#"
