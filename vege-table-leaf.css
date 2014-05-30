@@ -42,3 +42,7 @@ object {
 .leaf-content-type-list > div {
   white-space: pre-line;
 }
+
+.leaf-content-type-counts {
+  max-height: 10em;
+}
