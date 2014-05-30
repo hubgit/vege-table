@@ -14,10 +14,10 @@
           <template if="{{ value &amp;&amp; value.url }}">
             <div class="leaf-seed-link">
               <template if="{{ value.name }}">
-                <a href="{{ value.url }}">{{ value.name }}</a>
+                <a href="{{ value.url }}" target="_blank">{{ value.name }}</a>
               </template>
               <template if="{{ !value.name }}">
-                <a href="{{ value.url }}">{{ value.url }}</a>
+                <a href="{{ value.url }}" target="_blank">{{ value.url }}</a>
               </template>
             </div>
           </template>
