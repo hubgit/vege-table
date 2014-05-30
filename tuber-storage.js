@@ -5,8 +5,13 @@
 Polymer('tuber-storage', {
   storage: '',
   ready: function() {
-    this.domSerializer = new XMLSerializer();
-    this.domParser = new DOMParser();
+    try {
+      this.domSerializer = new XMLSerializer();
+      this.domParser = new DOMParser();
+    } catch (e) {
+      console.warn(e);
+    }
+
     this.queue = new Queue({ name: 'storage' });
     this.queued = {};
   },
