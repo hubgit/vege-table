@@ -67,6 +67,7 @@
             </tr>
 
             <tr class="table-actions">
+              <th></th>
               <template repeat="{{ leaf in leaves }}">
               <th>
                 <template if="{{ leaf.index > 0 }}">
@@ -78,18 +79,46 @@
                 </template>
 
                 <!-- TODO: set 'sortable'? -->
-                <template if="{{ leaf.type !== 'list' }}">
+                <template if="{{ leaf.type === 'text' }}">
                   <button type="button"
                     class="btn btn-xs btn-default"
                     on-click="{{ sortLeaf }}"
                     data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="asc">A</button>
+                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-alphabet"></span></button>
 
                   <button type="button"
                     class="btn btn-xs btn-default"
                     on-click="{{ sortLeaf }}"
                     data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="desc">Z</button>
+                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span></button>
+                </template>
+
+                <template if="{{ leaf.type === 'number' }}">
+                  <button type="button"
+                    class="btn btn-xs btn-default"
+                    on-click="{{ sortLeaf }}"
+                    data-leaf-name="{{ leaf.name }}"
+                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-order"></span></button>
+
+                  <button type="button"
+                    class="btn btn-xs btn-default"
+                    on-click="{{ sortLeaf }}"
+                    data-leaf-name="{{ leaf.name }}"
+                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-order-alt"></span></button>
+                </template>
+
+                <template if="{{ leaf.type === 'date' }}">
+                  <button type="button"
+                    class="btn btn-xs btn-default"
+                    on-click="{{ sortLeaf }}"
+                    data-leaf-name="{{ leaf.name }}"
+                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+
+                  <button type="button"
+                    class="btn btn-xs btn-default"
+                    on-click="{{ sortLeaf }}"
+                    data-leaf-name="{{ leaf.name }}"
+                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
                 </template>
 
                 <template if="{{ leaf.index < leaves.length - 1 }}">

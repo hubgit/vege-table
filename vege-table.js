@@ -203,39 +203,40 @@ Polymer('vege-table', {
     }.bind(this));
   },
 
-  clearLeaf: function(event) {
-    var leafName = event.target.getAttribute('data-leaf-name');
+  clearLeaf: function(event, details, sender) {
+    var leafName = sender.getAttribute('data-leaf-name');
 
     this.items.forEach(function(item) {
       delete item[leafName];
     });
   },
 
-  fetchLeaf: function(event) {
-    var leafName = event.target.getAttribute('data-leaf-name');
+  fetchLeaf: function(event, details, sender) {
+    var leafName = sender.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
 
     this.$.miner.updateItems(leaf);
   },
 
-  fetchLeafBlanks: function(event) {
-    var leafName = event.target.getAttribute('data-leaf-name');
+  fetchLeafBlanks: function(event, details, sender) {
+    var leafName = sender.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
 
     this.$.miner.updateBlankItems(leaf);
   },
 
-  summariseLeaf: function(event) {
-    var leafName = event.target.getAttribute('data-leaf-name');
+  summariseLeaf: function(event, details, sender) {
+    var leafName = sender.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
 
     this.summarise(leaf);
   },
 
-  sortLeaf: function(event) {
-    var descending = event.target.getAttribute('data-leaf-sort') === 'desc';
-    var leafName = event.target.getAttribute('data-leaf-name');
+  sortLeaf: function(event, details, sender) {
+    var descending = sender.getAttribute('data-leaf-sort') === 'desc';
+    var leafName = sender.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
+    console.log('leaf', leafName, leaf);
 
     var sortFunction;
 
@@ -245,9 +246,14 @@ Polymer('vege-table', {
 
       case 'number':
       case 'float':
-      case 'date':
         sortFunction = function(a, b) {
           return descending ? b - a : a - b;
+        };
+        break;
+
+      case 'date':
+        sortFunction = function(a, b) {
+          return descending ? b.getTime() - a.getTime() : a.getTime() - b.getTime();
         };
         break;
 
@@ -301,10 +307,10 @@ Polymer('vege-table', {
     }
   },
 
-  moveLeaf: function(event) {
-    var right = event.target.getAttribute('data-leaf-move') === 'right';
+  moveLeaf: function(event, details, sender) {
+    var right = sender.getAttribute('data-leaf-move') === 'right';
 
-    var leafName = event.target.getAttribute('data-leaf-name');
+    var leafName = sender.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
     leaf.index += right ? 1.5 : -1.5;
     this.sortLeavesByIndex();
