@@ -30,7 +30,6 @@
 
         <template if="{{ db }}">
           <div>
-            <button class="btn btn-danger" on-click="{{ clearItems }}">Clear items</button>
             <button class="btn btn-primary" on-click="{{ openEditor }}">Edit seeds</button>
             <template if="{{ seed.data }}">
               <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
@@ -68,6 +67,7 @@
         </template>
 
         <div class="form-actions">
+          <button class="btn btn-danger" on-click="{{ clearItems }}">Clear items</button>
           <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
           <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
         </div>
