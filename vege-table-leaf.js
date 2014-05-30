@@ -28,12 +28,6 @@ Polymer('vege-table-leaf', {
       case 'json':
       return JSON.stringify(this.value, null, '  ');
 
-      case 'html':
-      return '[html]';
-
-      case 'xml':
-      return '[xml]';
-
       case 'number':
       return Math.round(this.value);
 
