@@ -24,6 +24,16 @@ Polymer('leaf-miner', {
     }.bind(this));
   },
 
+  updateBlankItems: function(leaf) {
+    console.log('updating blank items', this.items.length);
+
+    this.items.forEach(function(item) {
+      if (typeof item[leaf.name] == 'undefined') {
+        this.updateLeaf(item, leaf);
+      }
+    }.bind(this));
+  },
+
   updateLeaves: function() {
     console.log('updating items for all leaves', this.items.length, this.leaves.length);
 

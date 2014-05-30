@@ -129,6 +129,11 @@
                       class="btn btn-xs btn-default"
                       on-click="{{ fetchLeaf }}"
                       data-leaf-name="{{ leaf.name }}">Fetch</button>
+
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ fetchLeafBlanks }}"
+                      data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
                   </template>
 
                   <template if="{{ leaf.index != 0 }}">

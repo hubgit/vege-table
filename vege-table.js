@@ -219,6 +219,13 @@ Polymer('vege-table', {
     this.$.miner.updateItems(leaf);
   },
 
+  fetchLeafBlanks: function(event) {
+    var leafName = event.target.getAttribute('data-leaf-name');
+    var leaf = this.getLeafByName(leafName);
+
+    this.$.miner.updateBlankItems(leaf);
+  },
+
   summariseLeaf: function(event) {
     var leafName = event.target.getAttribute('data-leaf-name');
     var leaf = this.getLeafByName(leafName);
@@ -502,6 +509,8 @@ Polymer('vege-table', {
   },
 
   updateLeaf: function(event, leaf) {
+    // TODO: remove old leaf if renamed (or not allow renaming?)
+
     this.$.storage.updateLeaf(leaf).then(function() {
       console.log('saved leaf', leaf.name);
 
@@ -744,6 +753,10 @@ Polymer('vege-table', {
           case 'list':
             return item[filterName] && item[filterName].indexOf(filterValue) !== -1;
 
+          case 'counts':
+            // TODO
+            return;
+
           default:
             // loose equality, so it works for numbers
             return item[filterName] == filterValue;
@@ -813,7 +826,6 @@ Polymer('vege-table', {
             }
 
             if (leafType == 'counts') {
-              console.log(leafType, value)
               increment = value.count;
               value = value.name;
             }
