@@ -74,10 +74,6 @@ input[type=file] {
   display: inline-block;
 }
 
-.leaf-title .badge {
-  margin-bottom: 0;
-}
-
 .leaf-type-text {
   min-width: 10em;
 }
@@ -87,16 +83,16 @@ input[type=file] {
   min-width: 20em;
 }
 
-.leaf-type-list div {
-  white-space: pre-line;
-}
-
 .leaf-type-longtext {
   min-width: 20em;
 }
 
-.leaf-type-json {
-  min-width: 15em;
+td.leaf-type-json {
+  min-width: 1em;
+}
+
+.leaf-title .badge {
+  margin-bottom: 0;
 }
 
 .summaries .list-group {

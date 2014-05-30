@@ -11,14 +11,11 @@ pre {
   margin: 0;
   background-color: transparent;
   box-shadow: none;
-}
-
-pre code {
   white-space: pre;
 }
 
 div {
-  max-height: 10em;
+  max-height: 6em;
   overflow: auto;
 }
 
@@ -30,4 +27,18 @@ object {
   padding: 5px;
   background: #F3F3F3;
   clear: both;
+}
+
+.show-object {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.leaf-seed-link a {
+  display: inline-block;
+}
+
+.leaf-content-type-list > div {
+  white-space: pre-line;
 }

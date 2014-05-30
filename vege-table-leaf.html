@@ -6,126 +6,56 @@
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="vege-table-leaf.css">
 
-    <template if="{{ !specialType }}"><div>{{ stringValue }}</div></template>
+    <div class="leaf-content-type-{{ type }}">
+      <template if="{{ !specialType }}"><div>{{ stringValue }}</div></template>
 
-    <template if="{{ specialType }}">
-      <template if="{{ type == 'json' }}">
-        <template if="{{ value &amp;&amp; value.url }}">
-          <template if="{{ value.name }}">
-            <a href="{{ value.url }}">{{ value.name }}</a>
-          </template>
-          <template if="{{ !value.name }}">
-            <a href="{{ value.url }}">{{ value.url }}</a>
+      <template if="{{ specialType }}">
+        <template if="{{ type == 'json' }}">
+          <template if="{{ value &amp;&amp; value.url }}">
+            <div class="leaf-seed-link">
+              <template if="{{ value.name }}">
+                <a href="{{ value.url }}">{{ value.name }}</a>
+              </template>
+              <template if="{{ !value.name }}">
+                <a href="{{ value.url }}">{{ value.url }}</a>
+              </template>
+            </div>
           </template>
         </template>
-        <template if="{{ !value || !value.url }}">
-          <pre><code language="json">{{ stringValue }}</code></pre>
+
+        <template if="{{ type == 'html' || type == 'xml' || type == 'json' }}">
+          <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
+          <button class="show-object" on-click="{{ showObject }}" data-value="{{ stringValue }}"><span class="glyphicon glyphicon-eye-open"></span></button>
+        </template>
+
+        <template if="{{ type == 'url' }}">
+          <a href="{{ value }}" target="_blank">{{ value }}</a>
+        </template>
+
+        <template if="{{ type == 'object' }}">
+          <object data="{{ value }}"></object>
+        </template>
+
+        <template if="{{ type == 'element' }}">
+          <!-- TODO -->
+        </template>
+
+        <template if="{{ type == 'counts' }}">
+          <ul class="list-group">
+            <template repeat="{{ item in value }}">
+              <li class="list-group-item">
+                <span class="badge">{{ item.count }}</span>
+                <span>{{ item.name }}</span>
+              </li>
+            </template>
+          </ul>
         </template>
       </template>
 
-      <template if="{{ type == 'html' }}">
-        <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
-        <!-- TODO: button to show HTML in modal -->
-      </template>
-
-      <template if="{{ type == 'xml' }}">
-        <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
-        <!-- TODO: button to show HTML in modal -->
-      </template>
-
-      <template if="{{ type == 'url' }}">
-        <a href="{{ value }}" target="_blank">{{ value }}</a>
-      </template>
-
-      <template if="{{ type == 'object' }}">
-        <object data="{{ value }}"></object>
-      </template>
-
-      <template if="{{ type == 'element' }}">
-        <!-- TODO -->
-      </template>
-
-      <template if="{{ type == 'counts' }}">
-        <ul class="list-group">
-          <template repeat="{{ item in value }}">
-            <li class="list-group-item">
-              <span class="badge">{{ item.count }}</span>
-              <span>{{ item.name }}</span>
-            </li>
-          </template>
-        </ul>
-      </template>
-    </template>
-
-    <!-- TODO -->
-    <div id="element"></div>
+      <!-- TODO -->
+      <div id="element"></div>
+    </div>
   </template>
 
-  <script>
-    Polymer('vege-table-leaf', {
-      value: null,
-      stringValue: null,
-      type: '',
-      specialType: true,
-      specialTypes: ['json', 'html', 'xml', 'url', 'object', 'element', 'counts'],
-      typeChanged: function() {
-        this.specialType = (this.specialTypes.indexOf(this.type) !== -1);
-      },
-      valueChanged: function() {
-        this.stringValue = this.convert();
-
-        if (this.type == 'element') {
-          this.$.element.innerHTML = '';
-          this.$.element.appendChild(this.stringValue);
-        }
-      },
-      convert: function() {
-        if (this.value === null || this.value === undefined) {
-          return null;
-        }
-
-        switch (this.type) {
-          case 'json':
-          return JSON.stringify(this.value, null, '  ');
-
-          case 'html':
-          return '[html]';
-
-          case 'xml':
-          return '[xml]';
-
-          case 'number':
-          return Math.round(this.value);
-
-          case 'list':
-          return this.value ? this.value.join(',\n') : null;
-
-          case 'date':
-          return this.value.toLocaleDateString(); // TODO: format
-
-          case 'element':
-          var element = document.createElement(this.value[0]);
-
-          var attributes = this.value[1];
-          Object.keys(attributes).forEach(function(key) {
-            element[key] = attributes[key];
-          });
-
-          return element;
-
-          //case 'url':
-          //return this.value.href;
-
-          //this.$.element.appendChild(element);
-          //return;
-
-          //var blob = new Blob([div.innerHTML], { type: 'text/html' });
-          //return URL.createObjectURL(blob);
-
-          default:
-          return this.value;
-        }
-      }
-    });
-  </script>
+  <script src="vege-table-leaf.js"></script>
 </polymer-element>

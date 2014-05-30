@@ -130,12 +130,11 @@ Polymer('vege-table', {
     var leafName = leaf.name;
     var leafType = leaf.type;
 
-    var cell = leaf.index - 1; // first column is the heading
+    var cell = leaf.index;
 
     this.summarisers.forEach(function(summariser) {
-      console.log(leafType);
       if (summariser.types.indexOf(leafType) !== -1) {
-        console.log('summarising', leafName, this.displayItems.length);
+        console.log('summarising', leafName, cell, this.displayItems.length);
 
         var values = this.displayItems.map(function(item) {
           return item[leafName];

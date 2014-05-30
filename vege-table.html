@@ -60,6 +60,7 @@
 
           <thead>
             <tr>
+              <th class="leaf-type-json">Seed</th>
               <template repeat="{{ leaf in leaves }}">
               <th class="leaf-type-{{ leaf.type }}">{{ leaf.title }}</th>
               </template>
@@ -107,6 +108,9 @@
             <template repeat="{{ item, index in displayItems }}">
               <template if="{{ index >= startIndex &amp;&amp; index <= endIndex }}">
                 <tr>
+                  <td is="vege-table-leaf" class="leaf-type-json"
+                      value="{{ item.seed }}" type="json"></td>
+
                   <template repeat="{{ leaf in leaves }}">
                     <td is="vege-table-leaf"
                       class="leaf-type-{{ leaf.type }}"
@@ -120,6 +124,8 @@
 
           <tfoot class="summaries">
             <tr class="table-actions">
+              <td></td>
+
               <template repeat="{{ leaf in leaves }}">
                 <td>
                   <span class="badge {{ { 'alert-success': leaf.complete == items.length } | tokenList }}">{{ leaf.complete }}</span>
