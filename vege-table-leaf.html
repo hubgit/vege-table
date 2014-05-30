@@ -10,7 +10,17 @@
 
     <template if="{{ specialType }}">
       <template if="{{ type == 'json' }}">
-        <pre><code language="json">{{ stringValue }}</code></pre>
+        <template if="{{ value &amp;&amp; value.url }}">
+          <template if="{{ value.name }}">
+            <a href="{{ value.url }}">{{ value.name }}</a>
+          </template>
+          <template if="{{ !value.name }}">
+            <a href="{{ value.url }}">{{ value.url }}</a>
+          </template>
+        </template>
+        <template if="{{ !value || !value.url }}">
+          <pre><code language="json">{{ stringValue }}</code></pre>
+        </template>
       </template>
 
       <template if="{{ type == 'html' }}">
