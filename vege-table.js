@@ -752,8 +752,9 @@ Polymer('vege-table', {
             return item[filterName] && item[filterName].indexOf(filterValue) !== -1;
 
           case 'counts':
-            // TODO
-            return;
+            return item[filterName] && item[filterName].some(function(item) {
+              return item.name === filterValue;
+            });
 
           default:
             // loose equality, so it works for numbers
