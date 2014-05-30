@@ -463,7 +463,6 @@ Polymer('vege-table', {
     console.log('adding items', items.length);
 
     items.forEach(function(item) {
-      item.doctype = 'item';
       //item.index = this.nextIndex();
       this.items.push(item);
     }.bind(this));

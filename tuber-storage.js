@@ -214,7 +214,6 @@ Polymer('tuber-storage', {
     return request;
   },
   addLeaf: function(leaf) {
-    leaf.doctype = 'leaf';
     leaf._id = 'leaf_' + leaf.name;
 
     delete leaf._rev;
@@ -251,7 +250,7 @@ Polymer('tuber-storage', {
       });
     }
 
-    ['doctype', 'index', 'seed'].forEach(function(key) {
+    ['index', 'seed'].forEach(function(key) {
       output[key] = item[key];
     });
 
@@ -295,7 +294,7 @@ Polymer('tuber-storage', {
       });
     }
 
-    ['doctype', 'index', 'seed'].forEach(function(key) {
+    ['index', 'seed'].forEach(function(key) {
       item[key] = input[key];
     });
 
