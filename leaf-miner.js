@@ -86,7 +86,9 @@ Polymer('leaf-miner', {
         if (result instanceof Promise) {
             result.then(function(result) {
                 this.setLeaf(item, leaf, result);
-            }.bind(this));
+            }.bind(this), function(err) {
+              console.error(err);
+            });
         } else {
             this.setLeaf(item, leaf, result);
         }
