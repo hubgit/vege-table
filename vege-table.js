@@ -745,17 +745,13 @@ Polymer('vege-table', {
       var filterType = filter.type;
       var filterValue = filter.value;
 
-      // TODO: more types
-      switch (filterType) {
-        case 'date':
-          filterValue = new Date(filterValue); // TODO: granularity?
-        break;
-      }
-
       this.displayItems = this.items.filter(function(item) {
         switch (filterType) {
           case 'list':
             return item[filterName] && item[filterName].indexOf(filterValue) !== -1;
+
+          case 'date':
+            return item[filterName] && item[filterName].toISOString().substr(0, 10) === filterValue;
 
           case 'counts':
             return item[filterName] && item[filterName].some(function(item) {
