@@ -14,9 +14,8 @@ pre {
   white-space: pre;
 }
 
-div {
+:host > div {
   max-height: 6em;
-  overflow: auto;
 }
 
 object {
@@ -37,6 +36,10 @@ object {
 
 .leaf-seed-link a {
   display: inline-block;
+}
+
+.leaf-seed-name {
+  min-width: 25em;
 }
 
 .leaf-content-type-list > div {

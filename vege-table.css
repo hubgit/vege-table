@@ -22,7 +22,6 @@ th, td {
   padding: 2px 5px;
   vertical-align: top;
   overflow: auto;
-  min-width: 10em;
 }
 
 caption {
@@ -85,10 +84,6 @@ input[type=file] {
 
 .leaf-type-longtext {
   min-width: 20em;
-}
-
-td.leaf-type-json {
-  min-width: 1em;
 }
 
 .leaf-title .badge {
