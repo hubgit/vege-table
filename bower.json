@@ -19,6 +19,7 @@
     "code-mirror": "hubgit/code-mirror#master",
     "web-resource": "hubgit/web-resource#master",
     "pouch-db": "hubgit/pouch-db#master",
+    "doc-leaves": "hubgit/doc-leaves#master",
     "es6-promise": "components/es6-promise#~1.0.0"
   }
 }

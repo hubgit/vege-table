@@ -4,6 +4,7 @@
 
 <link rel="import" href="../marked-element/marked-element.html">
 <link rel="import" href="../web-resource/web-resource.html">
+<link rel="import" href="../doc-leaves/article-metadata.html">
 
 <link rel="import" href="seed-harvester.html">
 <link rel="import" href="leaf-builder.html">
@@ -15,6 +16,8 @@
   <template>
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="vege-table.css">
+
+    <article-metadata></article-metadata>
 
     <tuber-storage id="storage" storage="{{ db }}"
       seed="{{ seed }}" leaves="{{ leaves }}" items="{{ items }}" progress="{{ progress }}"></tuber-storage>
