@@ -16,6 +16,8 @@ Polymer('vege-table', {
   summarised: false,
 
   ready: function() {
+    this.nullSummaryValues();
+
     this.filter = this.filter || null;
 
     this.seed = {
@@ -686,8 +688,8 @@ Polymer('vege-table', {
 
       this.loadDataFile(dataFile).then(function() {
         console.log('data file loaded');
-      }, function() {
-        console.log('no data file found');
+      }, function(e) {
+        console.log('no data file found', e.stack);
         //this.$.harvester.plantSeeds();
       }.bind(this));
     }
