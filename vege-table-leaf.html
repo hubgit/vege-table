@@ -14,7 +14,7 @@
           <template if="{{ value &amp;&amp; value.url }}">
             <div class="leaf-seed-link">
               <template if="{{ value.name }}">
-                <a href="{{ value.url }}" target="_blank">{{ value.name }}</a>
+                <a href="{{ value.url }}" target="_blank" class="leaf-seed-name">{{ value.name }}</a>
               </template>
               <template if="{{ !value.name }}">
                 <a href="{{ value.url }}" target="_blank"><span class="glyphicon glyphicon-link"></span></a>
