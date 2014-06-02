@@ -51,6 +51,22 @@ Polymer('leaf-miner', {
   setLeaf: function(item, leaf, value) {
       var leafName = leaf.name;
 
+      if (value !== undefined && value !== null) {
+        switch (leaf.type) {
+          case 'date':
+            if (!(value instanceof Date)) {
+              value = new Date(value);
+            }
+            break;
+
+          case 'number':
+            if (!(value instanceof Number)) {
+              value = parseInt(value);
+            }
+            break;
+        }
+      }
+
       item[leafName] = value;
 
       this.fire('item-changed', item);
