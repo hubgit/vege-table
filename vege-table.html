@@ -11,6 +11,7 @@
 <link rel="import" href="leaf-miner.html">
 <link rel="import" href="vege-table-leaf.html">
 <link rel="import" href="tuber-storage.html">
+<link rel="import" href="data-view.html">
 
 <polymer-element name="vege-table" attributes="db descriptionFile dataFile items leaves">
   <template>
@@ -20,7 +21,11 @@
     <article-metadata></article-metadata>
 
     <tuber-storage id="storage" storage="{{ db }}"
-      seed="{{ seed }}" leaves="{{ leaves }}" items="{{ items }}" progress="{{ progress }}"></tuber-storage>
+      seed="{{ seed }}"
+      leaves="{{ leaves }}"
+      items="{{ items }}"
+      views="{{ views }}"
+      progress="{{ progress }}"></tuber-storage>
 
     <!-- leaf-miner -->
     <leaf-miner id="miner"
@@ -32,206 +37,211 @@
 
     <resource-queue></resource-queue>
 
+    <template repeat="{{ view, index in views }}">
+      <data-view
+        view="{{ view }}"
+        items="{{ displayItems }}"
+        leaves="{{ leaves }}"
+        storage="{{ db }}"
+        data-view-index="{{ index }}"
+        on-remove-view="{{ removeView }}"
+        on-view-changed="{{ saveViews }}"></data-view>
+    </template>
+
+    <div>
+      <button type="button" class="btn btn-default btn-sm"
+        on-click="{{ addView }}"><span
+        class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
+    </div>
+
     <!-- vege-table -->
-    <section class="panel panel-default">
-      <h2 class="panel-heading">Data</h2>
+    <template if="{{ items.length }}">
+      <section class="panel panel-default">
+        <h2 class="panel-heading">Data</h2>
 
-      <template if="{{ items.length }}">
-        <div class="panel-body">
-          <div>Page {{ page }} of  {{ pages }} {{ pages | pageMessage }}</div>
+          <div class="panel-body">
+            <div>Page {{ page }} of  {{ pages }} {{ pages | pageMessage }}</div>
 
-          <div><input value="{{ page }}" type="range" min="1" max="{{ pages }}"></div>
+            <div><input value="{{ page }}" type="range" min="1" max="{{ pages }}"></div>
 
-          <div>Show <select value="{{ indexLimit }}">
-            <option>5</option>
-            <option>10</option>
-            <option>25</option>
-            <option>100</option>
-            <!-- TODO: generate up to max item length -->
-          </select> items per page ({{ itemCount }} total)</div>
-        </div>
+            <div>Show <select value="{{ indexLimit }}">
+              <option>5</option>
+              <option>10</option>
+              <option>25</option>
+              <option>100</option>
+              <!-- TODO: generate up to max item length -->
+            </select> items per page ({{ itemCount }} total)</div>
+          </div>
 
-        <table class="table">
-          <caption><!-- TODO --></caption>
+          <table class="table">
+            <caption><!-- TODO --></caption>
 
-          <!-- TODO: allow columns to be resized - set width style here -->
-          <colgroup>
-            <template repeat="{{ leaves }}">
-              <col span="1" width="0*">
-            </template>
-          </colgroup>
-
-          <thead>
-            <tr>
-              <th class="leaf-type-json">Seed</th>
-              <template repeat="{{ leaf in leaves }}">
-              <th class="leaf-type-{{ leaf.type }}">{{ leaf.title }}</th>
+            <!-- TODO: allow columns to be resized - set width style here -->
+            <colgroup>
+              <template repeat="{{ leaves }}">
+                <col span="1" width="0*">
               </template>
-            </tr>
+            </colgroup>
 
-            <tr class="table-actions">
-              <th></th>
-              <template repeat="{{ leaf in leaves }}">
-              <th>
-                <template if="{{ leaf.index > 0 }}">
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ moveLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-move="left">&larr;</button>
-                </template>
-
-                <!-- TODO: set 'sortable'? -->
-                <template if="{{ leaf.type === 'text' }}">
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-alphabet"></span></button>
-
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span></button>
-                </template>
-
-                <template if="{{ leaf.type === 'number' }}">
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-order"></span></button>
-
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-order-alt"></span></button>
-                </template>
-
-                <template if="{{ leaf.type === 'date' }}">
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
-
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ sortLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
-                </template>
-
-                <template if="{{ leaf.index < leaves.length - 1 }}">
-                  <button type="button"
-                    class="btn btn-xs btn-default"
-                    on-click="{{ moveLeaf }}"
-                    data-leaf-name="{{ leaf.name }}"
-                    data-leaf-move="right">&rarr;</button>
-                </template>
-              </th>
-              </template>
-            </tr>
-          </thead>
-
-          <tbody>
-            <template repeat="{{ item, index in displayItems }}">
-              <template if="{{ index >= startIndex &amp;&amp; index <= endIndex }}">
-                <tr>
-                  <td is="vege-table-leaf" class="leaf-type-json"
-                      value="{{ item.seed }}" type="json"></td>
-
-                  <template repeat="{{ leaf in leaves }}">
-                    <td is="vege-table-leaf"
-                      class="leaf-type-{{ leaf.type }}"
-                      value="{{ item[leaf.name] }}"
-                      type="{{ leaf.type }}"></td>
-                  </template>
-                </tr>
-              </template>
-            </template>
-          </tbody>
-
-          <tfoot class="summaries">
-            <tr class="table-actions">
-              <td></td>
-
-              <template repeat="{{ leaf in leaves }}">
-                <td>
-                  <span class="badge {{ { 'alert-success': leaf.complete == items.length } | tokenList }}">{{ leaf.complete }}</span>
-
-                  <template if="{{ db }}">
-                    <button type="button"
-                      class="btn btn-xs btn-default"
-                      on-click="{{ fetchLeaf }}"
-                      data-leaf-name="{{ leaf.name }}">Fetch</button>
-
-                    <button type="button"
-                      class="btn btn-xs btn-default"
-                      on-click="{{ fetchLeafBlanks }}"
-                      data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
-                  </template>
-
-                  <template if="{{ leaf.index != 0 }}">
-                    <button type="button"
-                      class="btn btn-xs btn-default"
-                      on-click="{{ summariseLeaf }}"
-                      data-leaf-name="{{ leaf.name }}">Sum</button>
-                  </template>
-
-                  <!--
-                  <template if="{{ db }}">
-                    <button class="btn btn-xs btn-danger" on-click="{{ clearLeaf }}" data-leaf-name="{{ leaf.name }}">Clear</button>
-                  </template>
-                  -->
-                </td>
-              </template>
-            </tr>
-
-            <template repeat="{{ summariser, summariserIndex in summarisers }}">
+            <thead>
               <tr>
-                <th>{{ summariser.label }}</th>
+                <th class="leaf-type-json">Seed</th>
+                <template repeat="{{ leaf in leaves }}">
+                <th class="leaf-type-{{ leaf.type }}">{{ leaf.title }}</th>
+                </template>
+              </tr>
 
-                <template repeat="{{ summary, summaryIndex in summariser.summaries }}">
-                  <td>
-                    <template if="{{ summary }}">
-                      <template if="{{ summariser.type != 'list' &amp;&amp; summariser.type != 'counts' }}">
-                        <div>{{ summary }}</div>
-                      </template>
+              <tr class="table-actions">
+                <th></th>
+                <template repeat="{{ leaf in leaves }}">
+                <th>
+                  <template if="{{ leaf.index > 0 }}">
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ moveLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-move="left">&larr;</button>
+                  </template>
 
-                      <template if="{{ summariser.type == 'list' || summariser.type == 'counts' }}">
-                        <div class="list-group">
-                          <template repeat="{{ s in summary }}">
-                            <a href="#"
-                              class="leaf-count list-group-item {{ { active: filter.key == summary.leafName &amp;&amp; filter.value == s.key } | tokenList }}"
-                              data-leaf-index="{{ summaryIndex }}"
-                              data-filter-value="{{ s.key }}"
-                              on-click="{{ filterTable }}"><span class="badge">{{ s.count }}</span>{{ s.key }}</a>
-                          </template>
-                        </div>
+                  <!-- TODO: set 'sortable'? -->
+                  <template if="{{ leaf.type === 'text' }}">
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-alphabet"></span></button>
 
-                        <div>
-                          <button type="button" class="btn btn-default btn-xs"
-                            on-click="{{ exportSummary }}"
-                            data-leaf-index="{{ summaryIndex }}"
-                            data-summariser-index="{{ summariserIndex }}">Export</button>
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span></button>
+                  </template>
 
-                          <button type="button" class="btn btn-default btn-xs"
-                            on-click="{{ exportValues }}"
-                            data-leaf-index="{{ summaryIndex }}">Export values</button>
-                        </div>
-                      </template>
+                  <template if="{{ leaf.type === 'number' }}">
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-order"></span></button>
+
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-order-alt"></span></button>
+                  </template>
+
+                  <template if="{{ leaf.type === 'date' }}">
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ sortLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                  </template>
+
+                  <template if="{{ leaf.index < leaves.length - 1 }}">
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ moveLeaf }}"
+                      data-leaf-name="{{ leaf.name }}"
+                      data-leaf-move="right">&rarr;</button>
+                  </template>
+                </th>
+                </template>
+              </tr>
+            </thead>
+
+            <tbody>
+              <template repeat="{{ item, index in displayItems }}">
+                <template if="{{ index >= startIndex &amp;&amp; index <= endIndex }}">
+                  <tr>
+                    <td is="vege-table-leaf" class="leaf-type-json"
+                        value="{{ item.seed }}" type="json"></td>
+
+                    <template repeat="{{ leaf in leaves }}">
+                      <td is="vege-table-leaf"
+                        class="leaf-type-{{ leaf.type }}"
+                        value="{{ item[leaf.name] }}"
+                        type="{{ leaf.type }}"></td>
                     </template>
+                  </tr>
+                </template>
+              </template>
+            </tbody>
+
+            <tfoot class="summaries">
+              <tr class="table-actions">
+                <td></td>
+
+                <template repeat="{{ leaf in leaves }}">
+                  <td>
+                    <span class="badge {{ { 'alert-success': leaf.complete == items.length } | tokenList }}">{{ leaf.complete }}</span>
+
+                    <template if="{{ leaf.index != 0 }}">
+                      <button type="button"
+                        class="btn btn-xs btn-default"
+                        on-click="{{ summariseLeaf }}"
+                        data-leaf-name="{{ leaf.name }}">Sum</button>
+                    </template>
+
+                    <!--
+                    <template if="{{ db }}">
+                      <button class="btn btn-xs btn-danger" on-click="{{ clearLeaf }}" data-leaf-name="{{ leaf.name }}">Clear</button>
+                    </template>
+                    -->
                   </td>
                 </template>
               </tr>
-            </template>
-          </tfoot>
-        </table>
-      </template>
-    </section>
+
+              <template repeat="{{ summariser, summariserIndex in summarisers }}">
+                <tr>
+                  <th>{{ summariser.label }}</th>
+
+                  <template repeat="{{ summary, summaryIndex in summariser.summaries }}">
+                    <td>
+                      <template if="{{ summary }}">
+                        <template if="{{ summariser.type != 'list' &amp;&amp; summariser.type != 'counts' }}">
+                          <div>{{ summary }}</div>
+                        </template>
+
+                        <template if="{{ summariser.type == 'list' || summariser.type == 'counts' }}">
+                          <div class="list-group">
+                            <template repeat="{{ s in summary }}">
+                              <a href="#"
+                                class="leaf-count list-group-item {{ { active: filter.key == summary.leafName &amp;&amp; filter.value == s.key } | tokenList }}"
+                                data-leaf-index="{{ summaryIndex }}"
+                                data-filter-value="{{ s.key }}"
+                                on-click="{{ filterTable }}"><span class="badge">{{ s.count }}</span>{{ s.key }}</a>
+                            </template>
+                          </div>
+
+                          <div>
+                            <button type="button" class="btn btn-default btn-xs"
+                              on-click="{{ exportSummary }}"
+                              data-leaf-index="{{ summaryIndex }}"
+                              data-summariser-index="{{ summariserIndex }}">Export</button>
+
+                            <button type="button" class="btn btn-default btn-xs"
+                              on-click="{{ exportValues }}"
+                              data-leaf-index="{{ summaryIndex }}">Export values</button>
+                          </div>
+                        </template>
+                      </template>
+                    </td>
+                  </template>
+                </tr>
+              </template>
+            </tfoot>
+          </table>
+      </section>
+    </template>
 
     <!-- leaf-builder -->
     <template if="{{ leaves.length || items.length }}">
@@ -244,6 +254,7 @@
             fields="{{ fields }}"
             db="{{ db }}"
             progress="{{ progress.leaves }}"
+            on-fetch-leaf="{{ fetchLeaf }}"
             on-leaf-added="{{ addLeaf }}"
             on-leaf-changed="{{ updateLeaf }}"
             on-leaf-removed="{{ removeLeaf }}"></leaf-builder>
@@ -252,7 +263,7 @@
 
     <!-- item builder -->
     <section class="panel panel-default">
-      <h2 class="panel-heading">Preparation</h2>
+      <h2 class="panel-heading">Seeds</h2>
 
       <!-- item builder -->
       <div class="panel-body">
@@ -283,15 +294,13 @@
            </fieldset>
 
            <fieldset class="col-md-6">
-             <template if="{{ seed.data }}">
-               <legend>Export</legend>
+             <legend>Export</legend>
 
-               <div class="form-actions">
-                 <button type="button"
-                   class="btn btn-default"
-                   on-click="{{ export }}">Export files</button>
-               </div>
-             </template>
+             <div class="form-actions">
+               <button type="button"
+                 class="btn btn-default"
+                 on-click="{{ export }}">Export files</button>
+             </div>
            </fieldset>
           </div>
          </form>

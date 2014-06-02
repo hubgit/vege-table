@@ -1,4 +1,4 @@
-/*globals console:false, Parsers:false*/
+/* globals console:false, CSVParser:false, Collection: false */
 'use strict';
 
 Polymer('seed-harvester', {
@@ -10,7 +10,7 @@ Polymer('seed-harvester', {
       data: '',
       url: '',
       replace: true,
-      language: 'javascript'
+      language: 'resource'
     };
 
     this.items = this.items || [];
@@ -68,38 +68,95 @@ Polymer('seed-harvester', {
     this.plantSeeds();
   },
 
-  plantSeeds: function() {
-    var data;
+  harvestSeeds: function(seed, preview) {
+    this.validate(seed);
 
-    this.error = null;
+    switch (seed.language) {
+      case 'resource':
+        var parts = [];
 
-    switch (this.seed.language) {
+        var collection = new Collection(seed.url);
+        parts.push('var collection = new Collection(\'' + seed.url + '\');');
+
+        if (seed.itemsSelector) {
+          collection.items = new Function('document', seed.itemsSelector);
+
+          var text = seed.itemsSelector.split(/\n/).map(function(line) {
+            return '\t' + line.trim();
+          }).join('\n');
+
+          parts.push('collection.items = function(document) {\n' + text + '\n}');
+        }
+
+        if (seed.nextSelector && !preview) {
+          collection.next = new Function('document', seed.nextSelector);
+
+          var text = seed.nextSelector.split(/\n/).map(function(line) {
+            return '\t' + line.trim();
+          }).join('\n');
+
+          parts.push('collection.next = function(document) {\n' + text + '\n}');
+        }
+
+        parts.push('return collection.get(\'' + seed.format + '\');');
+
+        seed.code = parts.join('\n\n');
+        console.log(seed.code);
+
+        return collection.get(seed.format);
+
       case 'javascript':
-        var harvester = new Function(this.seed.data); // TODO: wrap in closure?
-        var result = harvester();
+        var harvester = new Function(seed.code); // TODO: wrap in closure?
 
-        result.then(this.addItems.bind(this), this.onFetchError.bind(this));
-      break;
+        return  harvester();
 
       case 'csv':
-      // TODO: set enclosure, etc
-      var parser = new CSVParser({
-        delimiter: this.delimiter
-      });
+        return new Promise(function(resolve, reject) {
+            // TODO: set enclosure, etc
+            var parser = new CSVParser({
+              delimiter: this.delimiter
+            });
 
-      // TODO: normalise field names
+            // TODO: normalise field names
 
-      data = parser.parse(this.seed.data).results.rows;
-      // TODO: log errors, preview?
+            resolve(parser.parse(seed.data).results.rows);
+          // TODO: reject on errors
+        });
 
-      this.addItems(data);
-      break;
 
       case 'json':
-      data = JSON.parse(this.seed.data);
+        return new Promise(function(resolve, reject) {
+          resolve(JSON.parse(seed.data));
 
-      this.addItems(data);
+          // TODO: reject
+        });
+    }
+  },
+
+  validate: function(seed) {
+    switch (seed.language) {
+      case 'resource':
+        ['url', 'format', 'itemsSelector', 'nextSelector'].forEach(function(key) {
+          seed[key] = seed[key] ? seed[key].trim() : null;
+        });
       break;
     }
+  },
+
+  plantSeeds: function() {
+    this.error = null;
+
+    this.harvestSeeds(this.seed).then(this.addItems.bind(this), this.onFetchError.bind(this));
+  },
+
+  generatePreview: function() {
+    console.log('generating preview', this.editing);
+
+    this.preview = null;
+
+    this.harvestSeeds(this.editing, true).then(function(items) {
+      console.log(items);
+      this.preview = items ? JSON.stringify(items.slice(0, 5), null, '  ') : '';
+    }.bind(this));
   }
 });

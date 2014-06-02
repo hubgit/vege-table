@@ -36,6 +36,7 @@ Polymer('vege-table', {
     this.leaves = [];
     this.fields = [];
     this.displayItems = [];
+    this.views = [];
 
     var matches = window.location.search.match(/db=([\w-]+)/);
 
@@ -54,6 +55,7 @@ Polymer('vege-table', {
     if (this.db) {
       this.async(function() {
         this.$.storage.loadSeed();
+        this.$.storage.loadViews();
         this.$.storage.loadLeaves().then(this.loadItems.bind(this));
       });
     }
@@ -213,11 +215,8 @@ Polymer('vege-table', {
     });
   },
 
-  fetchLeaf: function(event, details, sender) {
-    var leafName = sender.getAttribute('data-leaf-name');
-    var leaf = this.getLeafByName(leafName);
-
-    this.$.miner.updateItems(leaf);
+  fetchLeaf: function(event, details) {
+    this.$.miner.updateItems(details);
   },
 
   fetchLeafBlanks: function(event, details, sender) {
@@ -343,6 +342,7 @@ Polymer('vege-table', {
     });
   },
 
+  /*
   buildFetch: function(type, key, value) {
     switch (type) {
       case 'date':
@@ -366,6 +366,7 @@ Polymer('vege-table', {
 
     return 'return ' + key;
   },
+  */
 
   updateFields: function() {
     if (!this.items.length) {
@@ -396,7 +397,8 @@ Polymer('vege-table', {
 
       this.fields.push({
         name: 'item.seed.' + key,
-        fetch: this.buildFetch(type, 'item.seed.' + key, value),
+        //fetch: this.buildFetch(type, 'item.seed.' + key, value),
+        fetch: 'return item.seed.' + key,
         title: this.titleCase(key),
         depends: ['seed'],
         type: type
@@ -545,6 +547,15 @@ Polymer('vege-table', {
     this.$.storage.saveSeed();
   },
 
+  saveViews: function() {
+    console.log('saving views');
+    var storage = this.$.storage;
+
+    this.views.forEach(function(view) {
+      storage.saveView(view);
+    });
+  },
+
   export: function() {
     this.saveDescriptionFile();
     this.saveDataFile();
@@ -666,6 +677,7 @@ Polymer('vege-table', {
 
     if (this.db) {
       this.saveSeed();
+      this.saveViews();
     }
 
     data.leaves.forEach(function(leaf) {
@@ -801,6 +813,21 @@ Polymer('vege-table', {
 
       this.filterItems();
     }
+  },
+
+  addView: function() {
+    this.views.push({
+      title: 'Untitled View',
+    });
+  },
+
+  removeView: function(event, details, sender) {
+    var index = sender.getAttribute('data-view-index');
+    var view = this.views[index];
+
+    this.$.storage.remove(view).then(function() {
+      this.views.splice(index, 1);
+    }.bind(this));
   },
 
   // TODO: move these to a separate file

@@ -71,6 +71,8 @@ Polymer('tuber-storage', {
   saveSeed: function() {
     this.seed._id = 'seed';
 
+    console.log(this.seed);
+
     var request = this.put(this.seed);
 
     request.then(function(result) {
@@ -221,8 +223,6 @@ Polymer('tuber-storage', {
   addLeaf: function(leaf) {
     leaf._id = 'leaf_' + leaf.name;
 
-    delete leaf._rev;
-
     var request = this.put(leaf);
 
     request.then(function(result) {
@@ -241,6 +241,46 @@ Polymer('tuber-storage', {
       leaf._rev = result.rev;
     }.bind(this)).catch(function(err) {
       console.error('error updating leaf', err);
+    });
+
+    return request;
+  },
+
+  loadViews: function() {
+    var request = this.db.allDocs({
+      startkey: 'view_',
+      endkey: 'view_zzz',
+      include_docs: true
+    });
+
+    request.then(function(result) {
+      result.rows.forEach(function(row) {
+        this.views.push(row.doc);
+        this.fire('view-loaded', row.doc);
+      }.bind(this));
+
+      console.log('views loaded', this.views.length);
+      this.progress.views = 'loaded';
+    }.bind(this), function() {
+      this.progress.views = 'empty';
+    }.bind(this));
+
+    return request;
+  },
+
+  saveView: function(view) {
+    if (!view.id) {
+      var now = window.performance.now().toString();
+      view._id = 'view_' + now;
+    }
+
+    var request = this.put(view);
+
+    request.then(function(result) {
+      view._rev = result.rev;
+      console.log('saved view', view);
+    }.bind(this)).catch(function(err) {
+      console.error('error updating view', err);
     });
 
     return request;
