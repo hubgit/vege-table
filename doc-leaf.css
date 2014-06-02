@@ -15,3 +15,9 @@ h3 {
   max-height: 10em;
   overflow-y: auto;
 }
+
+.function-header,
+.function-footer {
+  font-family: monospace;
+  color: gray;
+}

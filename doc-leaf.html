@@ -34,6 +34,17 @@
 
           <template if="{{ db }}">
             <div class="form-actions pull-right">
+              <button type="button"
+                class="btn btn-default"
+                on-click="{{ fetchLeaf }}">Fetch</button>
+
+              <!--
+              <button type="button"
+                class="btn btn-xs btn-default"
+                on-click="{{ fetchLeafBlanks }}"
+                data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
+                -->
+
               <button class="btn btn-default" on-click="{{ openEditor }}">Edit</button>
               <button class="btn btn-danger" on-click="{{ removeLeaf }}">Remove</button>
             </div>
@@ -117,7 +128,15 @@
         <div class="form-group">
           <label for="fetch">Fetch</label>
 
+          <template if="{{ editing.title }}">
+            <div class="function-header">item.{{ editing.title | prepareName }} = function(item) {</div>
+          </template>
+
           <code-mirror value="{{ editing.fetch }}" mode="javascript" lineNumbers="true"></code-mirror>
+
+          <template if="{{ editing.title }}">
+            <div class="function-footer">}</div>
+          </template>
         </div>
 
         <!-- description -->

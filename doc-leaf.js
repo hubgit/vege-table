@@ -43,11 +43,19 @@ Polymer('doc-leaf', {
 
   validate: function() {
     this.editing.title = this.editing.title.toString().trim();
-    this.editing.name = this.editing.title.toLowerCase().replace(/\W/g, '_');
+    this.editing.name = this.prepareName(this.editing.title);
 
     if (this.editing.depends && typeof this.editing.depends === 'string') {
       this.editing.depends = [this.editing.depends];
     }
+  },
+
+  prepareName: function(title) {
+    return title ? title.toLowerCase().replace(/\W/g, '_') : '';
+  },
+
+  fetchLeaf: function() {
+    this.fire('fetch-leaf', this.leaf);
   },
 
   removeLeaf: function() {
