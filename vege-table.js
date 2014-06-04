@@ -592,6 +592,37 @@ Polymer('vege-table', {
     }.bind(this));
 
     this.exportData(items, 'json', this.db + '-data.json');
+
+    this.saveDataCSVFile();
+  },
+
+  saveDataCSVFile: function() {
+    var csvLeafTypes = ['identifier', 'number', 'float', 'text', 'longtext', 'boolean', 'url', 'date'];
+
+    var csvLeaves = this.leaves.filter(function(leaf) {
+      return csvLeafTypes.indexOf(leaf.type) !== -1;
+    }).map(function(leaf) {
+      return leaf.name;
+    });
+
+    // note: only exporting displayed items as CSV
+    var rows = this.displayItems.map(function(item) {
+      return csvLeaves.map(function(leafName) {
+        var value = item[leafName];
+
+        if (value instanceof Date) {
+          value = value.toISOString().substring(0, 10);
+        } else if (value instanceof URL) {
+          value = value.href;
+        }
+
+        return value;
+      });
+    });
+
+    rows.unshift(csvLeaves);
+
+    this.exportData(rows, 'csv', this.db + '.csv');
   },
 
   exportData: function(data, type, filename) {
