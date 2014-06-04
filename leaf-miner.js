@@ -71,7 +71,9 @@ Polymer('leaf-miner', {
 
       this.fire('item-changed', item);
 
-      leaf.complete++;
+      if (value !== undefined && value !== null) {
+        leaf.complete++;
+      }
 
       if (leaf.complete === this.items.length) {
           this.fire('leaf-complete', leaf);
@@ -94,20 +96,24 @@ Polymer('leaf-miner', {
   },
 
   updateLeaf: function(item, leaf) {
-    if (leaf && this.isReady(leaf, item)) {
-        // TODO: loop through items here instead, and move on when all loaded + summarised?
-        var fetchFunction = new Function('item', leaf.fetch); // TODO: store this;
-        var result = fetchFunction(item);
+    if (leaf) {
+      this.setLeaf(item, leaf, undefined);
+    }
 
-        if (result instanceof Promise) {
-            result.then(function(result) {
-                this.setLeaf(item, leaf, result);
-            }.bind(this), function(err) {
-              console.error(err);
-            });
-        } else {
+    if (leaf && this.isReady(leaf, item)) {
+      // TODO: loop through items here instead, and move on when all loaded + summarised?
+      var fetchFunction = new Function('item', leaf.fetch); // TODO: store this;
+      var result = fetchFunction(item);
+
+      if (result instanceof Promise) {
+          result.then(function(result) {
             this.setLeaf(item, leaf, result);
-        }
+          }.bind(this), function(err) {
+            console.error(err);
+          });
+      } else {
+          this.setLeaf(item, leaf, result);
+      }
     }
   },
 

@@ -3,7 +3,7 @@
 <polymer-element name="vege-table-leaf" extends="td" attributes="type value">
 
   <template>
-    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <!--<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">-->
     <link rel="stylesheet" href="vege-table-leaf.css">
 
     <div class="leaf-content-type-{{ type }}">
@@ -11,10 +11,15 @@
 
       <template if="{{ specialType }}">
         <template if="{{ type == 'json' }}">
-          <template if="{{ value &amp;&amp; value.url }}">
+          <template if="{{ value &amp;&amp; (value.url || value.name) }}">
             <div class="leaf-seed-link">
               <template if="{{ value.name }}">
-                <a href="{{ value.url }}" target="_blank" class="leaf-seed-name">{{ value.name }}</a>
+                <template if="{{ value.url }}">
+                  <a href="{{ value.url }}" target="_blank" class="leaf-seed-name">{{ value.name }}</a>
+                </template>
+                <template if="{{ !value.url }}">
+                  <span class="leaf-seed-name">{{ value.name }}</span>
+                </template>
               </template>
               <template if="{{ !value.name }}">
                 <a href="{{ value.url }}" target="_blank"><span class="glyphicon glyphicon-link"></span></a>
@@ -23,9 +28,9 @@
           </template>
         </template>
 
-        <template if="{{ type == 'html' || type == 'xml' || type == 'json' }}">
+        <template if="{{ value &amp;&amp; (type == 'html' || type == 'xml' || type == 'json') }}">
           <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
-          <button class="show-object" on-click="{{ showObject }}" data-value="{{ stringValue }}"><span class="glyphicon glyphicon-eye-open"></span></button>
+          <button class="show-object" on-click="{{ showObject }}" data-value="{{ stringValue }}">view</button>
         </template>
 
         <template if="{{ type == 'url' }}">

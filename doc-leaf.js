@@ -58,6 +58,10 @@ Polymer('doc-leaf', {
     this.fire('fetch-leaf', this.leaf);
   },
 
+  fetchLeafBlanks: function() {
+    this.fire('fetch-leaf-blanks', this.leaf);
+  },
+
   removeLeaf: function() {
     this.fire('leaf-removed', this.leaf);
   },

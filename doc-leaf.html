@@ -38,12 +38,12 @@
                 class="btn btn-default"
                 on-click="{{ fetchLeaf }}">Fetch</button>
 
-              <!--
-              <button type="button"
-                class="btn btn-xs btn-default"
-                on-click="{{ fetchLeafBlanks }}"
-                data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
-                -->
+              <template if="{{ leaf.complete < items.length }}">
+                <button type="button"
+                  class="btn btn-default"
+                  on-click="{{ fetchLeafBlanks }}"
+                  data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
+              </template>
 
               <button class="btn btn-default" on-click="{{ openEditor }}">Edit</button>
               <button class="btn btn-danger" on-click="{{ removeLeaf }}">Remove</button>

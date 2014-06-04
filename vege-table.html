@@ -104,7 +104,7 @@
                   </template>
 
                   <!-- TODO: set 'sortable'? -->
-                  <template if="{{ leaf.type === 'text' }}">
+                  <template if="{{ leaf.type === 'text' || leaf.type === 'identifier' }}">
                     <button type="button"
                       class="btn btn-xs btn-default"
                       on-click="{{ sortLeaf }}"
@@ -118,7 +118,7 @@
                       data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span></button>
                   </template>
 
-                  <template if="{{ leaf.type === 'number' }}">
+                  <template if="{{ leaf.type === 'number' || leaf.type === 'float' }}">
                     <button type="button"
                       class="btn btn-xs btn-default"
                       on-click="{{ sortLeaf }}"
@@ -255,6 +255,7 @@
             db="{{ db }}"
             progress="{{ progress.leaves }}"
             on-fetch-leaf="{{ fetchLeaf }}"
+            on-fetch-leaf-blanks="{{ fetchLeafBlanks }}"
             on-leaf-added="{{ addLeaf }}"
             on-leaf-changed="{{ updateLeaf }}"
             on-leaf-removed="{{ removeLeaf }}"></leaf-builder>

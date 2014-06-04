@@ -219,11 +219,8 @@ Polymer('vege-table', {
     this.$.miner.updateItems(details);
   },
 
-  fetchLeafBlanks: function(event, details, sender) {
-    var leafName = sender.getAttribute('data-leaf-name');
-    var leaf = this.getLeafByName(leafName);
-
-    this.$.miner.updateBlankItems(leaf);
+  fetchLeafBlanks: function(event, details) {
+    this.$.miner.updateBlankItems(details);
   },
 
   summariseLeaf: function(event, details, sender) {
@@ -258,6 +255,7 @@ Polymer('vege-table', {
         };
         break;
 
+      /*
       default:
         sortFunction = function(a, b) {
           if (a === b) {
@@ -630,9 +628,7 @@ Polymer('vege-table', {
   },
 
   saveDataFile: function() {
-    var items = this.items.sort(function(a, b) {
-      return a.index - b.index;
-    }).map(function(item, index) {
+    var items = this.items.map(function(item, index) {
       item.index = index;
 
       return this.$.storage.dehydrateItem(item, false);

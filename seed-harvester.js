@@ -10,7 +10,8 @@ Polymer('seed-harvester', {
       data: '',
       url: '',
       replace: true,
-      language: 'resource'
+      language: 'resource',
+      format: 'html'
     };
 
     this.items = this.items || [];
@@ -88,7 +89,11 @@ Polymer('seed-harvester', {
           parts.push('collection.items = function(document) {\n' + text + '\n}');
         }
 
-        if (seed.nextSelector && !preview) {
+        if (preview) {
+          collection.next = function() {
+            return null;
+          };
+        } else if (seed.nextSelector) {
           collection.next = new Function('document', seed.nextSelector);
 
           var text = seed.nextSelector.split(/\n/).map(function(line) {
@@ -101,7 +106,6 @@ Polymer('seed-harvester', {
         parts.push('return collection.get(\'' + seed.format + '\');');
 
         seed.code = parts.join('\n\n');
-        console.log(seed.code);
 
         return collection.get(seed.format);
 
@@ -121,7 +125,7 @@ Polymer('seed-harvester', {
 
             resolve(parser.parse(seed.data).results.rows);
           // TODO: reject on errors
-        });
+        }.bind(this));
 
 
       case 'json':
@@ -137,7 +141,7 @@ Polymer('seed-harvester', {
     switch (seed.language) {
       case 'resource':
         ['url', 'format', 'itemsSelector', 'nextSelector'].forEach(function(key) {
-          seed[key] = seed[key] ? seed[key].trim() : null;
+          seed[key] = seed[key];// ? seed[key].trim() : null;
         });
       break;
     }
