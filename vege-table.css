@@ -102,7 +102,7 @@ input[type=file] {
 }
 
 .panel {
-  overflow-x: auto;
+  overflow-x: visible;
 }
 
 .panel h2,

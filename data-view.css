@@ -1,4 +1,33 @@
+:host {
+  display: inline-block;
+  max-width: 30em;
+  vertical-align: top;
+}
+
+:host.expanded {
+  max-width: 100%;
+}
+
 .panel-heading {
   font-weight: 100;
   margin: 0;
+}
+
+.list-group {
+  font-size: 90%;
+  max-height: 25rem;
+  overflow-y: auto;
+}
+
+.list-group-item {
+  padding: 5px 15px;
+}
+
+.list-group-item:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.panel-body.export-actions {
+  padding-bottom: 0;
 }

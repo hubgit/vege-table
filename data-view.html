@@ -3,7 +3,7 @@
 <!-- map -->
 <link rel="import" href="../leaflet-map/leaflet-map.html">
 
-<polymer-element name="data-view" attributes="view items leaves storage">
+<polymer-element name="data-view" attributes="view items leaves storage filter">
   <template>
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="data-view.css">
@@ -13,7 +13,28 @@
         <h2 class="panel-heading">{{ view.title }}</h2>
 
         <template if="{{ view.type  == 'map' }}">
-          <leaflet-map id="content"></leaflet-map>
+          <leaflet-map data="{{ data }}" height="30rem"></leaflet-map>
+        </template>
+
+        <template if="{{ view.type == 'counts' }}">
+          <div class="list-group">
+            <template repeat="{{ item in data }}">
+              <div data-filter-value="{{ item.key }}"
+                class="leaf-count list-group-item {{ item | activeItem }}"
+                on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
+            </template>
+          </div>
+
+          <div class="panel-body export-actions">
+            <button type="button" class="btn btn-default btn-xs"
+              on-click="{{ exportSummary }}"
+              data-leaf-index="{{ summaryIndex }}"
+              data-summariser-index="{{ summariserIndex }}">Export</button>
+
+            <button type="button" class="btn btn-default btn-xs"
+              on-click="{{ exportValues }}"
+              data-leaf-index="{{ summaryIndex }}">Export values</button>
+          </div>
         </template>
 
         <figcaption class="panel-body">
@@ -22,11 +43,11 @@
           <template if="{{ storage }}">
             <div class="form-actions">
               <button type="button" class="btn btn-danger"
-                on-click="{{ removeView }}"><span class="glyphicon glyphicon-trash"></span> Remove view</button>
+                on-click="{{ removeView }}"><span class="glyphicon glyphicon-trash"></span> Remove</button>
               <button type="button" class="btn btn-primary"
                 on-click="{{ openEditor }}">Edit view</button>
               <button type="button" class="btn btn-success"
-                on-click="{{ addItems }}">Add items</button>
+                on-click="{{ itemsChanged }}">Regenerate</button>
             </div>
           </template>
         </figcaption>
@@ -48,6 +69,7 @@
             <select id="type" value="{{ editing.type }}">
               <option>Select a type of view</option>
               <option value="map">Map</option>
+              <option value="counts">Counts</option>
             </select>
           </div>
 

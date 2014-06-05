@@ -43,9 +43,13 @@
         items="{{ displayItems }}"
         leaves="{{ leaves }}"
         storage="{{ db }}"
+        filter="{{ filter }}"
         data-view-index="{{ index }}"
         on-remove-view="{{ removeView }}"
-        on-view-changed="{{ saveViews }}"></data-view>
+        on-view-changed="{{ saveViews }}"
+        on-filter="{{ filterTable }}"
+        on-export-summary="{{ exportSummary }}"
+        on-export-values="{{ exportValues }}"></data-view>
     </template>
 
     <div>
@@ -178,18 +182,16 @@
 
             <tfoot class="summaries">
               <tr class="table-actions">
-                <td></td>
+                <th>Count</th>
 
                 <template repeat="{{ leaf in leaves }}">
                   <td>
                     <span class="badge {{ { 'alert-success': leaf.complete == items.length } | tokenList }}">{{ leaf.complete }}</span>
 
-                    <template if="{{ leaf.index != 0 }}">
-                      <button type="button"
-                        class="btn btn-xs btn-default"
-                        on-click="{{ summariseLeaf }}"
-                        data-leaf-name="{{ leaf.name }}">Sum</button>
-                    </template>
+                    <button type="button"
+                      class="btn btn-xs btn-default"
+                      on-click="{{ summariseLeaf }}"
+                      data-leaf-name="{{ leaf.name }}">Sum</button>
 
                     <!--
                     <template if="{{ db }}">
@@ -209,29 +211,6 @@
                       <template if="{{ summary }}">
                         <template if="{{ summariser.type != 'list' &amp;&amp; summariser.type != 'counts' }}">
                           <div>{{ summary }}</div>
-                        </template>
-
-                        <template if="{{ summariser.type == 'list' || summariser.type == 'counts' }}">
-                          <div class="list-group">
-                            <template repeat="{{ s in summary }}">
-                              <a href="#"
-                                class="leaf-count list-group-item {{ { active: filter.key == summary.leafName &amp;&amp; filter.value == s.key } | tokenList }}"
-                                data-leaf-index="{{ summaryIndex }}"
-                                data-filter-value="{{ s.key }}"
-                                on-click="{{ filterTable }}"><span class="badge">{{ s.count }}</span>{{ s.key }}</a>
-                            </template>
-                          </div>
-
-                          <div>
-                            <button type="button" class="btn btn-default btn-xs"
-                              on-click="{{ exportSummary }}"
-                              data-leaf-index="{{ summaryIndex }}"
-                              data-summariser-index="{{ summariserIndex }}">Export</button>
-
-                            <button type="button" class="btn btn-default btn-xs"
-                              on-click="{{ exportValues }}"
-                              data-leaf-index="{{ summaryIndex }}">Export values</button>
-                          </div>
                         </template>
                       </template>
                     </td>

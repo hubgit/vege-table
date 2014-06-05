@@ -32,7 +32,7 @@ Polymer('vege-table-leaf', {
       return Math.round(this.value);
 
       case 'list':
-      return this.value ? this.value.join(',\n') : null;
+      return this.value ? this.value.join('\n') : null;
 
       case 'date':
       return this.value.toLocaleDateString(); // TODO: format

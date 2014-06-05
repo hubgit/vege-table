@@ -98,6 +98,7 @@
                 <option value="date">Date</option>
                 <option value="element">Element</option>
                 <option value="object">Object</option>
+                <option value="location">Location</option>
                 <option value="list">List</option>
                 <option value="counts">Counts</option>
               </select>
@@ -111,7 +112,7 @@
             <div class="form-group">
               <label for="input-depends">Depends</label>
 
-              <select id="input-depends" class="form-control"
+              <select id="input-depends" class="form-control" required
                       value="{{ editing.depends }}" multiple size="5">
                 <option>seed</option>
 

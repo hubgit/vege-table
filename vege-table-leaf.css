@@ -18,6 +18,10 @@ pre {
   max-height: 6em;
 }
 
+:host > div.leaf-content-type-object {
+  max-height: 15em;
+}
+
 object {
   max-width: 20em;
 }

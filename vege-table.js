@@ -142,6 +142,8 @@ Polymer('vege-table', {
 
         var values = this.displayItems.map(function(item) {
           return item[leafName];
+        }).filter(function(value) {
+          return value !== undefined && value !== null;
         });
 
         var summary = summariser.reduce(values, leafType);
@@ -161,35 +163,13 @@ Polymer('vege-table', {
     this.summarised = true;
   },
 
-  exportSummary: function(event, details, sender) {
-    var summariserIndex = sender.getAttribute('data-summariser-index');
-    var leafIndex = sender.getAttribute('data-leaf-index');
-    var summariser = this.summarisers[summariserIndex];
-    var leaf = this.leaves[leafIndex];
-
-    var values = this.displayItems.map(function(item) {
-      return item[leaf.name];
-    });
-
-    var rows = summariser.reduce(values, leaf.type).map(function(row) {
-      return [row.key, row.count];
-    });
-
-    rows.unshift([leaf.name, 'count']);
-
-    this.exportData(rows, 'csv', this.db + '-' + leaf.name + '.csv');
+  exportSummary: function(event, details) {
+    this.exportData(details.rows, 'csv', this.db + '-' + details.leaf + '.csv');
   },
 
-  exportValues: function(event, details, sender) {
-      var leafIndex = sender.getAttribute('data-leaf-index');
-      var leaf = this.leaves[leafIndex];
-
-      var values = this.displayItems.map(function(item) {
-        return [item[leaf.name]];
-      });
-
-      this.exportData(values, 'csv', this.db + '-' + leaf.name + '.csv');
-    },
+  exportValues: function(event, details) {
+    this.exportData(details.rows, 'csv', this.db + '-' + details.leaf + '.csv');
+  },
 
   getLeafByName: function(leafName) {
     for (var i = 0; i < this.leaves.length; i++) {
@@ -283,7 +263,7 @@ Polymer('vege-table', {
             dre = /(^([\w ]+,?[\w ]+)?[\w ]+,?[\w ]+\d+:\d+(:\d+)?[\w ]?|^\d{1,4}[\/\-]\d{1,4}[\/\-]\d{1,4}|^\w+, \w+ \d+, \d{4})/,
             hre = /^0x[0-9a-f]+$/i,
             ore = /^0/,
-            options = options || { desc: descending, insensitive: true },
+            options = options || { desc: descending, insensitive: false },
             i = function(s) { return options.insensitive && (''+s).toLowerCase() || ''+s; },
             // convert all to strings strip whitespace
             x = i(a).replace(sre, '') || '',
@@ -322,8 +302,8 @@ Polymer('vege-table', {
 
     // sort null items to the bottom
     var sortNull = function(a, b) {
-      var aNull = (a === null || a === undefined || isNaN(a));
-      var bNull = (b === null || b === undefined || isNaN(b));
+      var aNull = (a === null || a === undefined || Number.isNaN(a));
+      var bNull = (b === null || b === undefined || Number.isNaN(b));
 
       if (aNull && bNull) {
         return 0;
@@ -387,31 +367,15 @@ Polymer('vege-table', {
     });
   },
 
-  /*
-  buildFetch: function(type, key, value) {
+  buildFetch: function(type, key) {
     switch (type) {
-      case 'date':
-        if (!(value instanceof Date)) {
-          key = 'new Date(' + key + ')';
-        }
-        break;
+      case 'url':
+        return 'var resource = new Resource(' + key + ');\n\nreturn resource.get(\'json\');';
 
-      case 'number':
-        if (!(value instanceof Number)) {
-          key = 'parseInt(' + key + ')';
-        }
-        break;
-
-      case 'float':
-        if (!(value instanceof Number)) {
-          key = 'parseFloat(' + key + ')';
-        }
-        break;
+      default:
+        return 'return ' + key;
     }
-
-    return 'return ' + key;
   },
-  */
 
   updateFields: function() {
     if (!this.items.length) {
@@ -442,11 +406,10 @@ Polymer('vege-table', {
 
       this.fields.push({
         name: 'item.seed.' + key,
-        //fetch: this.buildFetch(type, 'item.seed.' + key, value),
-        fetch: 'return item.seed.' + key,
+        fetch: this.buildFetch(type, 'item.seed.' + key, value),
         title: this.titleCase(key),
         depends: ['seed'],
-        type: type
+        type: type === 'url' ? 'json' : type
       });
     }.bind(this));
   },
@@ -830,8 +793,25 @@ Polymer('vege-table', {
 
     if (filter) {
       var filterName = filter.key;
-      var filterType = filter.type;
+      var leaf = this.getLeafByName(filterName);
+      var filterType = leaf.type;
       var filterValue = filter.value;
+
+      switch (filterType) {
+        case 'boolean':
+          filterValue = filterValue === 'true' || filterValue === true;
+          break;
+
+        case 'number':
+          filterValue = Number(filterValue);
+          break;
+
+        case 'float':
+          filterValue = Number(filterValue);
+          break;
+      }
+
+      console.log(filterValue, 'filterValue')
 
       this.displayItems = this.items.filter(function(item) {
         switch (filterType) {
@@ -847,8 +827,7 @@ Polymer('vege-table', {
             });
 
           default:
-            // loose equality, so it works for numbers
-            return item[filterName] == filterValue;
+            return item[filterName] === filterValue;
         }
       });
     } else {
@@ -861,10 +840,13 @@ Polymer('vege-table', {
     this.summariseLeaves();
   },
 
-  filterTable: function(event, details, sender) {
+  filterTable: function(event, details) {
     event.preventDefault();
 
-    if (sender.className.match(/\bactive\b/)) {
+    if (details.key && details.value) {
+      this.filter = details;
+      this.filterItems();
+    } else {
       console.log('resetting filter');
 
       this.displayItems = this.items.map(function(item) {
@@ -874,18 +856,6 @@ Polymer('vege-table', {
       this.itemCount = this.displayItems.length;
       this.filter = null; // triggers repagination
       this.summariseLeaves();
-    } else {
-      var index = sender.getAttribute('data-leaf-index');
-      var value = sender.getAttribute('data-filter-value');
-      var leaf = this.leaves[index];
-
-      this.filter = {
-        key: leaf.name,
-        type: leaf.type,
-        value: value
-      };
-
-      this.filterItems();
     }
   },
 
@@ -907,85 +877,13 @@ Polymer('vege-table', {
   // TODO: move these to a separate file
   summarisers: [
     {
-      name: 'facets',
-      label: 'Facets',
-      type: 'list',
-      types: ['number', 'date', 'list', 'counts', 'text', 'url'],
-      reduce: function(values, leafType) {
-        var counts = {};
-
-        var countValues = function(values) {
-          values.forEach(function(value) {
-            var increment = 1;
-
-            // null or undefined
-            if (value === null || value === undefined || value === '') {
-              return;
-            }
-
-            // array
-            if (Array.isArray(value)) {
-              countValues(value);
-              return;
-            }
-
-            if (leafType == 'counts') {
-              increment = value.count;
-              value = value.name;
-            }
-
-            switch (leafType) {
-              // date
-            case 'date':
-              //value = value.toISOString().substring(0, 19).replace('T', ' ');
-              value = value.toISOString().substring(0, 10);
-              break;
-
-              // everything else
-            default:
-              value = value.toString();
-              break;
-            }
-
-            if (typeof counts[value] === 'undefined') {
-              counts[value] = 0;
-            }
-
-            counts[value] += increment;
-          });
-        };
-
-        countValues(values);
-
-        var keys = Object.keys(counts);
-
-        //if (Object.keys(counts).length > 1) {
-        keys = keys.filter(function(key) {
-          return key && counts[key] > 0;
-        });
-        //}
-
-        keys.sort(function(a, b) {
-          return counts[b] - counts[a];
-        });
-
-        return keys.map(function(key) {
-          return {
-            key: key,
-            count: counts[key]
-          };
-        });
-      }
-    },
-    /*
-    {
       name: 'sum',
       label: 'Sum',
       type: 'float',
       types: ['number', 'float'],
       reduce: function(values) {
         return values.reduce(function(total, value) {
-          return total + (value ? value : 0);
+          return total + value;
         }, 0);
       }
     },
@@ -995,13 +893,9 @@ Polymer('vege-table', {
       type: 'float',
       types: ['number', 'float'],
       reduce: function(values) {
-        var sum = 0;
-
-        values.forEach(function(value) {
-          if (value) {
-            sum += value;
-          }
-        });
+        var sum = values.reduce(function(sum, value) {
+          return sum + value;
+        }, 0);
 
         return Math.round(sum / values.length, 2);
       }
@@ -1016,34 +910,23 @@ Polymer('vege-table', {
           return;
         }
 
-        var counts = {};
+        values.sort();
 
-        values.forEach(function(value) {
-          if (typeof counts[value] === 'undefined') {
-            counts[value] = 0;
-          }
+        var midpoint = Math.ceil(values.length / 2);
 
-          counts[value]++;
-        });
-
-        var sorted = Object.keys(counts).sort();
-
-        // TODO: filter out null values?
-
-        var midpoint = Math.ceil(sorted.length / 2);
-
-        if (sorted.length % 2 === 1) {
-          return sorted[midpoint];
+        if (values.length % 2 === 1) {
+          return values[midpoint];
         }
 
-        if (leafType !== 'number') {
-          return sorted[midpoint];
-        }
+        switch (leafType) {
+          case 'number':
+          case 'float':
+            return (values[midpoint - 1] + values[midpoint]) / 2;
 
-        // return mean of two middle points
-        return (sorted[midpoint] + sorted[midpoint + 1]) / 2;
+          default:
+            return values[midpoint - 1];
+        }
       }
     }
-    */
   ]
 });
