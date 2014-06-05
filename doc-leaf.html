@@ -35,18 +35,22 @@
           <template if="{{ db }}">
             <div class="form-actions pull-right">
               <button type="button"
-                class="btn btn-default"
-                on-click="{{ fetchLeaf }}">Fetch</button>
+                class="btn btn-default btn-sm"
+                on-click="{{ fetchLeaf }}"><span
+                  class="glyphicon glyphicon-refresh"></span> Fetch</button>
 
               <template if="{{ leaf.complete < items.length }}">
                 <button type="button"
-                  class="btn btn-default"
+                  class="btn btn-default btn-sm"
                   on-click="{{ fetchLeafBlanks }}"
                   data-leaf-name="{{ leaf.name }}">Fetch blanks</button>
               </template>
 
-              <button class="btn btn-default" on-click="{{ openEditor }}">Edit</button>
-              <button class="btn btn-danger" on-click="{{ removeLeaf }}">Remove</button>
+              <button class="btn btn-default btn-sm" on-click="{{ openEditor }}" title="Edit"><span
+                class="glyphicon glyphicon-edit"></span> Edit</button>
+
+              <button class="btn btn-danger btn-sm" on-click="{{ removeLeaf }}" title="Remove"><span
+                class="glyphicon glyphicon-trash"></span> Remove</button>
             </div>
           </template>
         </div>
@@ -76,7 +80,7 @@
 
         <div class="row">
           <!-- type -->
-          <div class="col-md-6">
+          <div class="col-sm-6">
 
             <!-- type -->
             <div class="form-group">
@@ -98,6 +102,7 @@
                 <option value="date">Date</option>
                 <option value="element">Element</option>
                 <option value="object">Object</option>
+                <option value="image">Image</option>
                 <option value="location">Location</option>
                 <option value="list">List</option>
                 <option value="counts">Counts</option>
@@ -107,7 +112,7 @@
           </div>
 
           <!-- depends -->
-          <div class="col-md-6">
+          <div class="col-sm-6">
 
             <div class="form-group">
               <label for="input-depends">Depends</label>
@@ -129,36 +134,44 @@
         <div class="form-group">
           <label for="fetch">Fetch</label>
 
-          <template if="{{ editing.title }}">
-            <div class="function-header">item.{{ editing.title | prepareName }} = function(item) {</div>
-          </template>
+          <div class="row">
+            <div class="col-sm-8">
+              <!-- title -->
+              <template if="{{ editing.title }}">
+                <div class="function-header">item.{{ editing.title | prepareName }} = function(item) {</div>
+              </template>
 
-          <code-mirror value="{{ editing.fetch }}" mode="javascript" lineNumbers="true"></code-mirror>
+              <!-- fetch function -->
+              <code-mirror value="{{ editing.fetch }}" mode="javascript" lineNumbers="true"></code-mirror>
 
-          <template if="{{ editing.title }}">
-            <div class="function-footer">}</div>
-          </template>
-        </div>
+              <template if="{{ editing.title }}">
+                <div class="function-footer">}</div>
+              </template>
 
-        <!-- description -->
-        <div class="form-group">
-          <label for="description">Description</label>
+              <!-- description -->
+              <div class="form-group">
+                <label for="description">Description</label>
 
-          <code-mirror value="{{ editing.description }}" mode="markdown" lineNumbers="true" lineWrapping="true"></code-mirror>
-        </div>
+                <code-mirror value="{{ editing.description }}" mode="markdown" lineNumbers="true" lineWrapping="true"></code-mirror>
+              </div>
 
-        <!-- actions -->
-        <div class="form-actions">
-          <button type="button" class="btn btn-default" on-click="{{ cancelEditor }}">Cancel</button>
-          <button type="button" class="btn btn-warning" on-click="{{ generatePreviews }}">Preview</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+              <!-- actions -->
+              <div class="form-actions">
+                <button type="button" class="btn btn-default" on-click="{{ cancelEditor }}">Cancel</button>
+                <button type="button" class="btn btn-warning" on-click="{{ generatePreviews }}">Preview</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <!-- previews -->
+              <template repeat="{{ preview in previews }}">
+                <pre class="leaf-preview leaf-preview-{{ leaf.type }}"><code>{{ preview }}</code></pre>
+              </template>
+            </div>
+          </div>
         </div>
       </form>
-
-      <!-- previews -->
-      <template repeat="{{ preview in previews }}">
-        <pre class="leaf-preview leaf-preview-{{ leaf.type }}"><code>{{ preview }}</code></pre>
-      </template>
     </template>
   </template>
 

@@ -18,22 +18,11 @@
 
         <template if="{{ view.type == 'counts' }}">
           <div class="list-group">
-            <template repeat="{{ item in data }}">
+            <template repeat="{{ item in viewData }}">
               <div data-filter-value="{{ item.key }}"
                 class="leaf-count list-group-item {{ item | activeItem }}"
                 on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
             </template>
-          </div>
-
-          <div class="panel-body export-actions">
-            <button type="button" class="btn btn-default btn-xs"
-              on-click="{{ exportSummary }}"
-              data-leaf-index="{{ summaryIndex }}"
-              data-summariser-index="{{ summariserIndex }}">Export</button>
-
-            <button type="button" class="btn btn-default btn-xs"
-              on-click="{{ exportValues }}"
-              data-leaf-index="{{ summaryIndex }}">Export values</button>
           </div>
         </template>
 
@@ -42,12 +31,26 @@
 
           <template if="{{ storage }}">
             <div class="form-actions">
-              <button type="button" class="btn btn-danger"
-                on-click="{{ removeView }}"><span class="glyphicon glyphicon-trash"></span> Remove</button>
-              <button type="button" class="btn btn-primary"
-                on-click="{{ openEditor }}">Edit view</button>
-              <button type="button" class="btn btn-success"
-                on-click="{{ itemsChanged }}">Regenerate</button>
+              <button type="button" class="btn btn-danger btn-sm"
+                title="Remove"
+                on-click="{{ removeView }}"><span class="glyphicon glyphicon-trash"></span></button>
+              <button type="button" class="btn btn-primary btn-sm"
+                title="Edit"
+                on-click="{{ openEditor }}"><span class="glyphicon glyphicon-edit"></span></button>
+              <button type="button" class="btn btn-success btn-sm"
+                title="Regenerate"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-refresh"></span></button>
+              <button type="button" class="btn btn-default btn-sm"
+                on-click="{{ exportSummary }}"
+                title="Export summary"
+                data-leaf-index="{{ summaryIndex }}"
+                data-summariser-index="{{ summariserIndex }}"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-download"></span></button>
+              <button type="button" class="btn btn-default btn-sm"
+                on-click="{{ exportValues }}"
+                title="Export values"
+                data-leaf-index="{{ summaryIndex }}"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-download-alt"></span></button>
             </div>
           </template>
         </figcaption>

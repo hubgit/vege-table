@@ -7,7 +7,7 @@ Polymer('vege-table-leaf', {
   stringValue: null,
   type: '',
   specialType: true,
-  specialTypes: ['json', 'html', 'xml', 'url', 'object', 'element', 'counts'],
+  specialTypes: ['json', 'html', 'xml', 'url', 'object', 'image', 'element', 'counts'],
   typeChanged: function() {
     this.specialType = (this.specialTypes.indexOf(this.type) !== -1);
   },
@@ -32,7 +32,7 @@ Polymer('vege-table-leaf', {
       return Math.round(this.value);
 
       case 'list':
-      return this.value ? this.value.join('\n') : null;
+      return this.value ? this.value.slice(0, 25).join('\n') : null; // TODO: remove slice
 
       case 'date':
       return this.value.toLocaleDateString(); // TODO: format
@@ -60,7 +60,17 @@ Polymer('vege-table-leaf', {
       return this.value;
     }
   },
-  showObject: function(event, detail, sender) {
-    console.log(sender.getAttribute('data-value'));
+  showObject: function() {
+    var value = this.value;
+
+    this.fire('show-object', {
+      path: this.leafName,
+      items: Object.keys(value).map(function(key) {
+        return {
+          key: key,
+          value: JSON.stringify(value[key], null, '  ')
+        };
+      })
+    });
   }
 });

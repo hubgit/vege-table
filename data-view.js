@@ -16,7 +16,7 @@ Polymer('data-view', {
     this.view = this.editing;
     this.editing = null;
     this.fire('view-changed');
-    this.async(this.addItems);
+    this.async(this.regenerate);
   },
 
   cancelEditor: function() {
@@ -28,9 +28,14 @@ Polymer('data-view', {
   },
 
   itemsChanged: function() {
+    this.regenerate();
+  },
+
+  regenerate: function() {
     var leaf = this.getLeafByName(this.view.leaf);
 
     this.data = this.reducers[this.view.type](this.items, leaf);
+    this.viewData = this.data.slice(0, 25); // TODO: configurable
   },
 
   getLeafByName: function(leafName) {

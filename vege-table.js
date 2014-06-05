@@ -131,6 +131,8 @@ Polymer('vege-table', {
   },
 
   summarise: function(leaf) {
+    return;
+
     var leafName = leaf.name;
     var leafType = leaf.type;
 
@@ -231,6 +233,18 @@ Polymer('vege-table', {
 
       case 'date':
         sortFunction = function(a, b) {
+          if (!a && !b) {
+            return 0;
+          }
+
+          if (!a) {
+            return -descending;
+          }
+
+          if (!b) {
+            return -descending;
+          }
+
           return descending ? b.getTime() - a.getTime() : a.getTime() - b.getTime();
         };
         break;
@@ -351,7 +365,7 @@ Polymer('vege-table', {
 
     this.$.storage.loadItems().then(function() {
       this.displayItems = this.items;
-      this.updateFields();
+      //this.updateFields();
 
       if (this.items.length) {
         this.summariseLeaves();
@@ -377,6 +391,26 @@ Polymer('vege-table', {
     }
   },
 
+  addSuggestedLeaf: function(event, details, sender) {
+    var path = sender.getAttribute('data-path');
+    var key = sender.getAttribute('data-key');
+
+    var field = {
+      name: path,
+      fetch: 'return item.' + path + '.' + key + ';',
+      title: this.titleCase(key),
+      depends: [path],
+      //type: type === 'url' ? 'json' : type
+    };
+
+    this.$.overlay.opened = false;
+
+    var builder = this.shadowRoot.getElementById('builder');
+    builder.addSuggestedLeaf(field);
+    builder.scrollIntoView();
+  },
+
+  /*
   updateFields: function() {
     if (!this.items.length) {
       return;
@@ -413,6 +447,7 @@ Polymer('vege-table', {
       });
     }.bind(this));
   },
+  */
 
   guessType: function(key, value) {
     var stringType = Object.prototype.toString.call(value);
@@ -468,7 +503,7 @@ Polymer('vege-table', {
       return item;
     });
 
-    this.updateFields();
+    //this.updateFields();
 
     //if (this.db) {
       this.fetchLeaves(); // TODO: only update added items
@@ -506,7 +541,7 @@ Polymer('vege-table', {
 
   addLeaf: function(event, leaf) {
     this.$.storage.addLeaf(leaf).then(function() {
-      this.updateFields();
+      //this.updateFields();
       this.$.miner.updateItems(leaf);
     }.bind(this));
   },
@@ -520,7 +555,7 @@ Polymer('vege-table', {
         this.updateItem(null, item);
       }.bind(this));
 
-      this.updateFields();
+      //this.updateFields();
     }.bind(this));
   },
 
@@ -728,7 +763,7 @@ Polymer('vege-table', {
       }
     }.bind(this));
 
-    this.updateFields();
+    //this.updateFields();
 
     this.progress.leaves = 'loaded';
 
@@ -872,6 +907,13 @@ Polymer('vege-table', {
     this.$.storage.remove(view).then(function() {
       this.views.splice(index, 1);
     }.bind(this));
+  },
+
+  showObject: function(event, details) {
+    console.log('show', details);
+
+    this.leafPicker = details;
+    this.$.overlay.opened = true;
   },
 
   // TODO: move these to a separate file

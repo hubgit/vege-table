@@ -9,7 +9,6 @@ Polymer('leaf-builder', {
   ready: function() {
     this.items = this.items || [];
     this.leaves = this.leaves || [];
-    this.fields = this.fields || [];
   },
 
   newLeaf: function() {
@@ -30,20 +29,10 @@ Polymer('leaf-builder', {
     leaf.index = this.nextIndex();
     this.leaves.push(leaf);
     this.adding = null;
+    //this.fire('leaf-added', leaf);
   },
 
-  addSuggestedLeaf: function(event, details, sender) {
-    event.preventDefault();
-
-    var index = sender.getAttribute('data-field-index');
-    var field = this.fields[index];
-
-    var adding = {};
-
-    Object.keys(field).forEach(function(key) {
-      adding[key] = field[key];
-    });
-
+  addSuggestedLeaf: function(adding) {
     this.adding = adding;
   },
 

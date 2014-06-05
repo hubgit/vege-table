@@ -2,7 +2,7 @@
 
 <link rel="import" href="doc-leaf.html">
 
-<polymer-element name="leaf-builder" attributes="items leaves fields db progress">
+<polymer-element name="leaf-builder" attributes="items leaves db progress">
   <template>
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="leaf-builder.css">
@@ -14,38 +14,10 @@
     <template if="{{ db }}">
       <div class="panel-body">
         <template if="{{ !adding }}">
-          <template if="{{ fields.length }}">
-            <h3>Available leaves</h3>
-
-            <div class="row">
-              <div class="col-md-6">
-                <ul class="list-group suggested-leaves">
-                  <template repeat="{{ field, index in fields }}">
-                    <li class="list-group-item suggested-leaf"
-                      data-field-index="{{ index }}"
-                      on-click="{{ addSuggestedLeaf }}">
-
-                      <span class="badge">{{ field.name }}</span>
-
-                      <template if="{{ field.type }}">
-                        <span class="badge">{{ field.type }}</span>
-                      </template>
-
-                      <span>{{ field.title }}</span>
-                    </li>
-                  </template>
-                </ul>
-              </div>
-
-              <div class="col-md-6">
-              </div>
-            </div>
-          </template>
-
           <div class="form-actions">
             <button type="button"
-              class="btn btn-primary"
-              on-click="{{ newLeaf }}">Add a leaf</button>
+              class="btn btn-primary btn-sm"
+              on-click="{{ newLeaf }}"><span class="glyphicon glyphicon-plus-sign"></span> Add a leaf</button>
           </div>
         </template>
 

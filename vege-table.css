@@ -61,7 +61,9 @@ pre {
 }
 
 .table-actions th,
-.table-actions td {
+.table-actions td,
+.table-move th,
+.table-move td {
   white-space: nowrap;
 }
 
@@ -77,17 +79,22 @@ input[type=file] {
   min-width: 10em;
 }
 
+.leaf-type-counts {
+  min-width: 15em;
+}
+
 .leaf-type-list,
 .leaf-type-counts {
-  min-width: 20em;
+  max-width: 20em;
+  overflow: hidden;
 }
 
 .leaf-type-longtext {
   min-width: 20em;
 }
 
-.leaf-title .badge {
-  margin-bottom: 0;
+.leaf-title {
+  white-space: nowrap;
 }
 
 .summaries .list-group {
@@ -114,3 +121,31 @@ input[type=file] {
   font-weight: 200;
 }
 
+.panel-action {
+  margin: 1rem 0;
+}
+
+#preview {
+  overflow: auto;
+  background: white;
+  padding: 10px;
+  outline: 1px solid rgba(0,0,0,0.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  width: 500px;
+  height: 500px;
+}
+
+#preview th {
+  text-align: right;
+  vertical-align: middle;
+}
+
+#preview th:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+#data-column,
+#views-column {
+  padding-right: 0;
+}

@@ -33,7 +33,8 @@
 
         <template if="{{ db }}">
           <div class="form-actions pull-right">
-            <button class="btn btn-primary" on-click="{{ openEditor }}">Edit seeds</button>
+            <button class="btn btn-primary" on-click="{{ openEditor }}"><span
+              class="glyphicon glyphicon-edit"></span> Edit seeds</button>
             <template if="{{ seed.data }}">
               <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
             </template>
@@ -56,65 +57,72 @@
           </select>
         </div>
 
-        <template if="{{ editing.language == 'csv' || editing.language == 'json' }}">
-          <div class="form-group">
-            <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
+        <div class="row">
+          <div class="col-sm-8">
+            <template if="{{ editing.language == 'csv' || editing.language == 'json' }}">
+              <div class="form-group">
+                <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'javascript'}}">
+              <div class="form-group">
+                <code-mirror language="{{ editing.language }}" value="{{ editing.code }}"></code-mirror>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'resource'}}">
+              <div class="form-group">
+                <span class="input-group">
+                  <span class="input-group-addon">URL</span>
+                  <!-- TODO: autocomplete/search -->
+                  <input type="url" required class="form-control"
+                    value="{{ editing.url }}" placeholder="http://&hellip;">
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label for="format">Format</label>
+
+                <select id="format" value="{{ editing.format }}" required>
+                  <option></option>
+                  <option value="html">HTML</option>
+                  <option value="json">JSON</option>
+                  <option value="jsonld">JSON-LD</option>
+                  <option value="csv">CSV</option>
+                  <option value="xml">XML</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <div class="function-header">collection.items = function(document) {</div>
+                <code-mirror language="javascript" value="{{ editing.itemsSelector }}"></code-mirror>
+                <div class="function-footer">}</div>
+              </div>
+
+              <div class="form-group">
+                <div class="function-header">collection.next = function(document) {</div>
+                <code-mirror language="javascript" value="{{ editing.nextSelector }}"></code-mirror>
+                <div class="function-footer">}</div>
+              </div>
+            </template>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-danger" on-click="{{ clearItems }}"><span class="glyphicon glyphicon-trash"></span> Clear items</button>
+              <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
+              <button type="button" class="btn btn-warning" on-click="{{ generatePreview }}">Preview</button>
+              <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
+            </div>
           </div>
-        </template>
 
-        <template if="{{ editing.language == 'javascript'}}">
-          <div class="form-group">
-            <code-mirror language="{{ editing.language }}" value="{{ editing.code }}"></code-mirror>
+          <div class="col-sm-4">
+            <!-- previews -->
+            <template if="{{ preview }}">
+              <pre is="syntax-highlight" id="preview" class="seed-preview"
+                   language="json" content="{{ preview }}"></pre>
+            </template>
           </div>
-        </template>
-
-        <template if="{{ editing.language == 'resource'}}">
-          <div class="form-group">
-            <span class="input-group">
-              <span class="input-group-addon">URL</span>
-              <!-- TODO: autocomplete/search -->
-              <input type="url" required class="form-control"
-                value="{{ editing.url }}" placeholder="http://&hellip;">
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label for="format">Format</label>
-
-            <select id="format" value="{{ editing.format }}" required>
-              <option></option>
-              <option value="html">HTML</option>
-              <option value="xml">XML</option>
-              <option value="json">JSON</option>
-              <option value="csv">CSV</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <div class="function-header">collection.items = function(document) {</div>
-            <code-mirror language="javascript" value="{{ editing.itemsSelector }}"></code-mirror>
-            <div class="function-footer">}</div>
-          </div>
-
-          <div class="form-group">
-            <div class="function-header">collection.next = function(document) {</div>
-            <code-mirror language="javascript" value="{{ editing.nextSelector }}"></code-mirror>
-            <div class="function-footer">}</div>
-          </div>
-        </template>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-danger" on-click="{{ clearItems }}"><span class="glyphicon glyphicon-trash"></span> Clear items</button>
-          <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
-          <button type="button" class="btn btn-warning" on-click="{{ generatePreview }}">Preview</button>
-          <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
         </div>
-
-        <!-- previews -->
-        <template if="{{ preview }}">
-          <pre is="syntax-highlight" id="preview"
-               language="json" content="{{ preview }}"></pre>
-        </template>
       </form>
     </template>
 

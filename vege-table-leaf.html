@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="vege-table-leaf" extends="td" attributes="type value">
+<polymer-element name="vege-table-leaf" extends="td" attributes="type value leafName">
 
   <template>
     <!--<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">-->
@@ -30,7 +30,7 @@
 
         <template if="{{ value &amp;&amp; (type == 'html' || type == 'xml' || type == 'json') }}">
           <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
-          <button class="show-object" on-click="{{ showObject }}" data-value="{{ stringValue }}">view</button>
+          <button class="show-object" on-click="{{ showObject }}">view</button>
         </template>
 
         <template if="{{ type == 'url' }}">
@@ -39,6 +39,10 @@
 
         <template if="{{ type == 'object' }}">
           <object data="{{ value }}"></object>
+        </template>
+
+        <template if="{{ type == 'image' }}">
+          <img src="{{ value }}"></img>
         </template>
 
         <template if="{{ type == 'element' }}">

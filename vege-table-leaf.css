@@ -22,8 +22,19 @@ pre {
   max-height: 15em;
 }
 
+:host > div.leaf-content-type-image {
+  max-height: 10em;
+  max-width: 10em;
+}
+
+.leaf-content-type-image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 object {
   max-width: 20em;
+  min-height: 10px;
 }
 
 .list-group-item {
@@ -43,11 +54,11 @@ object {
 }
 
 .leaf-seed-name {
-  min-width: 25em;
+  min-width: 10em;
 }
 
 .leaf-content-type-list > div {
-  white-space: pre-line;
+  white-space: pre;
 }
 
 .leaf-content-type-counts {

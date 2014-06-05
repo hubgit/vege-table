@@ -98,6 +98,8 @@ Polymer('doc-leaf', {
         result.then(function(result) {
           if (this.editing.type === 'json') {
             result = JSON.stringify(result, null, '  ');
+          } else if (this.editing.type === 'list') {
+            result = result.join('\n');
           }
 
           this.previews.push(result);

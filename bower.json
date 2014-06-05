@@ -20,6 +20,7 @@
     "web-resource": "hubgit/web-resource#master",
     "pouch-db": "hubgit/pouch-db#master",
     "doc-leaves": "hubgit/doc-leaves#master",
+    "core-overlay": "Polymer/core-overlay",
     "es6-promise": "components/es6-promise#~1.0.0"
   }
 }

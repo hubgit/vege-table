@@ -107,12 +107,33 @@ Polymer('seed-harvester', {
 
         seed.code = parts.join('\n\n');
 
-        return collection.get(seed.format);
+        console.log(seed.format);
+
+        var request = collection.get(seed.format);
+
+        switch (seed.format) {
+          case 'csv':
+            return request.then(function(response) {
+              console.log(response);
+
+              // TODO: set enclosure, etc
+              var parser = new CSVParser({
+                delimiter: this.delimiter
+              });
+
+              // TODO: normalise field names
+
+              return parser.parse(response).results.rows;
+            }.bind(this));
+
+          default:
+            return request;
+        }
 
       case 'javascript':
         var harvester = new Function(seed.code); // TODO: wrap in closure?
 
-        return  harvester();
+        return harvester();
 
       case 'csv':
         return new Promise(function(resolve, reject) {

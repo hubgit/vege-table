@@ -1,7 +1,6 @@
 :host {
-  display: inline-block;
-  max-width: 30em;
-  vertical-align: top;
+  display: block;
+  max-width: 30rem;
 }
 
 :host.expanded {
@@ -15,7 +14,7 @@
 
 .list-group {
   font-size: 90%;
-  max-height: 25rem;
+  max-height: 20rem;
   overflow-y: auto;
 }
 

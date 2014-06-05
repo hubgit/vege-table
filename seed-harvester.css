@@ -1,6 +1,6 @@
 pre {
   font-size: 90%;
-  max-height: 40em;
+  max-height: 50em;
   overflow-y: auto;
 }
 
@@ -21,4 +21,9 @@ h3 {
 .function-footer {
   font-family: monospace;
   color: gray;
+}
+
+pre.seed-preview {
+  font-size: 80%;
+  max-height: 30em;
 }
