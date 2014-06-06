@@ -35,7 +35,7 @@ Polymer('data-view', {
     var leaf = this.getLeafByName(this.view.leaf);
 
     this.data = this.reducers[this.view.type](this.items, leaf);
-    this.viewData = this.data.slice(0, 25); // TODO: configurable
+    this.viewData = this.data.slice(0, 50); // TODO: configurable
   },
 
   getLeafByName: function(leafName) {

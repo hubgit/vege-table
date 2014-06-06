@@ -114,8 +114,6 @@ Polymer('seed-harvester', {
         switch (seed.format) {
           case 'csv':
             return request.then(function(response) {
-              console.log(response);
-
               // TODO: set enclosure, etc
               var parser = new CSVParser({
                 delimiter: this.delimiter

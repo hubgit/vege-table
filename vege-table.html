@@ -73,17 +73,20 @@
             <h2 class="panel-heading">Data</h2>
 
               <div class="panel-body">
-                <div>Items {{ startIndex + 1 }}-{{ endIndex + 1 }} of {{ itemCount }}</div>
+                <div>
+                  <span>Items {{ startIndex + 1 }}-{{ endIndex + 1 }} of {{ itemCount }}</span>
+
+                  <span class="pull-right">
+                    <select value="{{ indexLimit }}">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>100</option>
+                        <!-- TODO: generate up to max item length -->
+                      </select> per page</span>
+                </div>
 
                 <div><input value="{{ page }}" type="range" min="1" max="{{ pages }}"></div>
-
-                <div>Show <select value="{{ indexLimit }}">
-                  <option>5</option>
-                  <option>10</option>
-                  <option>25</option>
-                  <option>100</option>
-                  <!-- TODO: generate up to max item length -->
-                </select> items per page</div>
               </div>
 
               <table class="table">
