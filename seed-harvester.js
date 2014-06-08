@@ -65,6 +65,8 @@ Polymer('seed-harvester', {
   saveSeeds: function(event) {
     event.preventDefault();
 
+    // TODO: don't save seed.data?
+
     this.closeEditor();
     this.plantSeeds();
   },
@@ -142,14 +144,22 @@ Polymer('seed-harvester', {
 
             // TODO: normalise field names
 
-            resolve(parser.parse(seed.data).results.rows);
+            var data = parser.parse(seed.data);
+
+            seed.data = null; // TODO: save this?
+
+            resolve(data.results.rows);
           // TODO: reject on errors
         }.bind(this));
 
 
       case 'json':
         return new Promise(function(resolve, reject) {
-          resolve(JSON.parse(seed.data));
+          var data = JSON.parse(seed.data);
+
+          seed.data = null; // TODO: save this?
+
+          resolve(data);
 
           // TODO: reject
         });
@@ -178,7 +188,6 @@ Polymer('seed-harvester', {
     this.preview = null;
 
     this.harvestSeeds(this.editing, true).then(function(items) {
-      console.log(items);
       this.preview = items ? JSON.stringify(items.slice(0, 5), null, '  ') : '';
     }.bind(this));
   }
