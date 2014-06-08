@@ -17,29 +17,37 @@
 
     <!-- viewing -->
     <template if="{{ !editing }}">
-      <div>
-        <template if="{{ seed.data }}">
-            <pre id="fetch"
-                 language="{{ seed.language }}">{{ seed.data }}</pre>
-        </template>
+      <div class="row">
+        <div class="col-md-6">
+          <template if="{{ seed.description }}">
+            <marked-element text="{{ seed.description }}"></marked-element>
+          </template>
+        </div>
 
-        <template if="{{ seed.code }}">
-            <pre is="syntax-highlight" id="code"
-                 language="javascript" content="{{ seed.code }}"></pre>
-        </template>
+        <div class="col-md-6">
+          <template if="{{ seed.data }}">
+              <pre id="fetch"
+                   language="{{ seed.language }}">{{ seed.data }}</pre>
+          </template>
 
-        <span class="label label-info
-          label-type-{{ seed.language }}">{{ seed.language }}</span>
+          <template if="{{ seed.code }}">
+              <pre is="syntax-highlight" id="code"
+                   language="javascript" content="{{ seed.code }}"></pre>
+          </template>
 
-        <template if="{{ db }}">
-          <div class="form-actions pull-right">
-            <button class="btn btn-primary" on-click="{{ openEditor }}"><span
-              class="glyphicon glyphicon-edit"></span> Edit seeds</button>
-            <template if="{{ seed.data }}">
-              <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
-            </template>
-          </div>
-        </template>
+          <span class="label label-info
+            label-type-{{ seed.language }}">{{ seed.language }}</span>
+
+          <template if="{{ db }}">
+            <div class="form-actions pull-right">
+              <button class="btn btn-primary" on-click="{{ openEditor }}"><span
+                class="glyphicon glyphicon-edit"></span> Edit seeds</button>
+              <template if="{{ seed.data }}">
+                <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
+              </template>
+            </div>
+          </template>
+        </div>
       </div>
     </template>
 
@@ -61,7 +69,7 @@
           <div class="col-sm-8">
             <template if="{{ editing.language == 'csv' }}">
               <div class="form-group">
-                <textarea class="form-control" value="{{ editing.data }}"></textarea>
+                <textarea class="form-control" value="{{ editing.data }}" rows="10"></textarea>
               </div>
             </template>
 
@@ -112,6 +120,17 @@
                 <div class="function-footer">}</div>
               </div>
             </template>
+
+            <!-- description -->
+            <div class="form-group">
+              <label for="description">Description</label>
+
+              <code-mirror
+                value="{{ editing.description }}"
+                mode="markdown"
+                lineNumbers="true"
+                lineWrapping="true"></code-mirror>
+            </div>
 
             <div class="form-actions">
               <button type="button" class="btn btn-danger" on-click="{{ clearItems }}"><span class="glyphicon glyphicon-trash"></span> Clear items</button>
