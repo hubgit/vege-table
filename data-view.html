@@ -26,6 +26,16 @@
           </div>
         </template>
 
+        <template if="{{ view.type == 'nulls' }}">
+          <div class="list-group">
+            <template repeat="{{ item in viewData }}">
+              <div data-filter-value="{{ item.key }}"
+                class="leaf-count list-group-item {{ item | activeItem }}"
+                on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
+            </template>
+          </div>
+        </template>
+
         <figcaption class="panel-body">
           <marked-element text="{{ view.description }}"></marked-element>
 
@@ -71,8 +81,9 @@
             <label for="type">Type</label>
             <select id="type" value="{{ editing.type }}">
               <option>Select a type of view</option>
-              <option value="map">Map</option>
               <option value="counts">Counts</option>
+              <option value="nulls">Nulls</option>
+              <option value="map">Map</option>
             </select>
           </div>
 

@@ -137,6 +137,30 @@ Polymer('data-view', {
       return geojson;
     },
 
+    nulls: function(items, leaf) {
+      var counts = items.reduce(function(counts, item) {
+        if (item[leaf.name] === null || item[leaf.name] === undefined) {
+          counts['true']++;
+        } else {
+          counts['false']++;
+        }
+
+        return counts;
+      }, {
+        'true': 0,
+        'false': 0
+      });
+
+      return Object.keys(counts).map(function(key) {
+        return {
+          key: key,
+          count: counts[key]
+        };
+      });
+
+      // TODO: filtering
+    },
+
     counts: function(items, leaf) {
       var leafName = leaf.name;
       var leafType = leaf.type;
