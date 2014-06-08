@@ -38,33 +38,46 @@
 
     <resource-queue></resource-queue>
 
+    <!-- seed harvester -->
+    <section class="panel panel-default">
+      <h2 class="panel-heading">Seeds</h2>
 
-    <div class="panel-action">
-      <button type="button" class="btn btn-default btn-xs"
-        on-click="{{ addView }}"><span
-        class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
-    </div>
+      <!-- item builder -->
+      <div class="panel-body">
+        <seed-harvester id="harvester"
+          seed="{{ seed }}"
+          db="{{ db }}"
+          progress="{{ progress.seed }}"
+          on-seed-changed="{{ saveSeed }}"
+          on-add-items="{{ addItems }}"
+          on-clear-items="{{ clearItems }}"></seed-harvester>
+      </div>
+    </section>
 
     <div class="row">
-      <template if="{{ views.length }}">
-        <div class="col-md-3" id="views-column">
-          <!-- views -->
-          <template repeat="{{ view, index in views }}">
-            <data-view
-              view="{{ view }}"
-              items="{{ displayItems }}"
-              leaves="{{ leaves }}"
-              storage="{{ db }}"
-              filter="{{ filter }}"
-              data-view-index="{{ index }}"
-              on-remove-view="{{ removeView }}"
-              on-view-changed="{{ saveViews }}"
-              on-filter="{{ filterTable }}"
-              on-export-summary="{{ exportSummary }}"
-              on-export-values="{{ exportValues }}"></data-view>
-          </template>
+      <div class="col-md-3" id="views-column">
+        <!-- views -->
+        <template repeat="{{ view, index in views }}">
+          <data-view
+            view="{{ view }}"
+            items="{{ displayItems }}"
+            leaves="{{ leaves }}"
+            storage="{{ db }}"
+            filter="{{ filter }}"
+            data-view-index="{{ index }}"
+            on-remove-view="{{ removeView }}"
+            on-view-changed="{{ saveViews }}"
+            on-filter="{{ filterTable }}"
+            on-export-summary="{{ exportSummary }}"
+            on-export-values="{{ exportValues }}"></data-view>
+        </template>
+
+        <div class="panel-action">
+          <button type="button" class="btn btn-default btn-xs"
+            on-click="{{ addView }}"><span
+            class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
         </div>
-      </template>
+      </div>
 
       <div class="col-md-9" id="data-column">
         <!-- vege-table -->
@@ -159,8 +172,7 @@
                 </thead>
 
                 <tbody>
-                  <template repeat="{{ item, index in displayItems }}">
-                    <template if="{{ index >= startIndex &amp;&amp; index <= endIndex }}">
+                  <template repeat="{{ item, index in tableItems }}">
                       <tr>
                         <td is="vege-table-leaf" class="leaf-type-json"
                             value="{{ item.seed }}"
@@ -177,7 +189,6 @@
                             type="{{ leaf.type }}"></td>
                         </template>
                       </tr>
-                    </template>
                   </template>
                 </tbody>
 
@@ -267,22 +278,6 @@
             on-leaf-removed="{{ removeLeaf }}"></leaf-builder>
       </section>
     </template>
-
-    <!-- item builder -->
-    <section class="panel panel-default">
-      <h2 class="panel-heading">Seeds</h2>
-
-      <!-- item builder -->
-      <div class="panel-body">
-        <seed-harvester id="harvester"
-          seed="{{ seed }}"
-          db="{{ db }}"
-          progress="{{ progress.seed }}"
-          on-seed-changed="{{ saveSeed }}"
-          on-add-items="{{ addItems }}"
-          on-clear-items="{{ clearItems }}"></seed-harvester>
-      </div>
-    </section>
 
     <template if="{{ db }}">
       <section class="panel panel-default">

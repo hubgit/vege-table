@@ -11,6 +11,16 @@
       <div class="alert alert-info">Loading&hellip;</div>
     </template>
 
+    <template repeat="{{ leaf in leaves }}">
+      <doc-leaf
+        class="doc-leaf"
+        db="{{ db }}"
+        leaf="{{ leaf }}"
+        leaves="{{ leaves }}"
+        items="{{ items }}"
+        on-leaf-removed="{{ removeLeaf }}"></doc-leaf>
+    </template>
+
     <template if="{{ db }}">
       <div class="panel-body">
         <template if="{{ !adding }}">
@@ -29,16 +39,6 @@
             on-leaf-added="{{ addLeaf }}"></doc-leaf>
         </template>
       </div>
-    </template>
-
-    <template repeat="{{ leaf in leaves }}">
-      <doc-leaf
-        class="doc-leaf"
-        db="{{ db }}"
-        leaf="{{ leaf }}"
-        leaves="{{ leaves }}"
-        items="{{ items }}"
-        on-leaf-removed="{{ removeLeaf }}"></doc-leaf>
     </template>
   </template>
   <script src="leaf-builder.js"></script>
