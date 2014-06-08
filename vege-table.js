@@ -36,6 +36,7 @@ Polymer('vege-table', {
     this.leaves = [];
     this.fields = [];
     this.displayItems = [];
+    this.tableItems = [];
     this.views = [];
 
     var matches = window.location.search.match(/db=([\w-]+)/);
@@ -61,12 +62,23 @@ Polymer('vege-table', {
     }
   },
 
+  displayItemsChanged: function() {
+    this.paginate();
+  },
+
+  generateTableItems: function() {
+    //console.log('generating table items', this.displayItems.length, this.startIndex, this.endIndex);
+    this.tableItems = this.displayItems.slice(this.startIndex, this.endIndex + 1);
+    //console.log(this.tableItems);
+  },
+
   paginate: function() {
     this.indexLimit = parseInt(this.indexLimit);
     this.pages = Math.ceil(this.itemCount / this.indexLimit);
     this.page = Math.min(Math.max(this.page, 1), this.pages);
     this.startIndex = Math.max(0, (this.page - 1) * this.indexLimit);
     this.endIndex = this.startIndex + this.indexLimit - 1;
+    this.generateTableItems();
   },
 
   pageChanged: function() {
@@ -397,10 +409,10 @@ Polymer('vege-table', {
 
     var field = {
       name: path,
-      fetch: 'return item.' + path + '.' + key + ';',
+      fetch: 'return item.' + path + '[\'' + key + '\'];',
       title: this.titleCase(key),
       depends: [path],
-      //type: type === 'url' ? 'json' : type
+      type: 'text',
     };
 
     this.$.overlay.opened = false;
@@ -409,45 +421,6 @@ Polymer('vege-table', {
     builder.addSuggestedLeaf(field);
     builder.scrollIntoView();
   },
-
-  /*
-  updateFields: function() {
-    if (!this.items.length) {
-      return;
-    }
-
-    this.fields = [];
-
-    var item = this.items[0];
-
-    var leafKeys = this.leaves.map(function(leaf) {
-      return leaf.name;
-    });
-
-    // add each seed property that isn't already a leaf
-    Object.keys(item.seed).sort().forEach(function(key) {
-      if (leafKeys.indexOf(key) !== -1) {
-        return;
-      }
-
-      // "private" properties
-      if (key[0] === '@' || key[0] === '_') {
-        return null;
-      }
-
-      var value = item.seed[key];
-      var type = this.guessType(key, value);
-
-      this.fields.push({
-        name: 'item.seed.' + key,
-        fetch: this.buildFetch(type, 'item.seed.' + key, value),
-        title: this.titleCase(key),
-        depends: ['seed'],
-        type: type === 'url' ? 'json' : type
-      });
-    }.bind(this));
-  },
-  */
 
   guessType: function(key, value) {
     var stringType = Object.prototype.toString.call(value);
@@ -846,7 +819,7 @@ Polymer('vege-table', {
           break;
       }
 
-      console.log(filterValue, 'filterValue')
+      console.log(filterValue, 'filterValue');
 
       this.displayItems = this.items.filter(function(item) {
         switch (filterType) {
@@ -862,7 +835,7 @@ Polymer('vege-table', {
             });
 
           default:
-            return item[filterName] === filterValue;
+            return item[filterName] == filterValue;
         }
       });
     } else {

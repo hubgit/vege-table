@@ -19,8 +19,8 @@
     <template if="{{ !editing }}">
       <div>
         <template if="{{ seed.data }}">
-            <pre is="syntax-highlight" id="fetch"
-                 language="{{ seed.language }}" content="{{ seed.data }}"></pre>
+            <pre id="fetch"
+                 language="{{ seed.language }}">{{ seed.data }}</pre>
         </template>
 
         <template if="{{ seed.code }}">
@@ -59,7 +59,13 @@
 
         <div class="row">
           <div class="col-sm-8">
-            <template if="{{ editing.language == 'csv' || editing.language == 'json' }}">
+            <template if="{{ editing.language == 'csv' }}">
+              <div class="form-group">
+                <textarea class="form-control" value="{{ editing.data }}"></textarea>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'json' }}">
               <div class="form-group">
                 <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
               </div>
