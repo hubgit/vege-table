@@ -70,11 +70,14 @@ object {
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
+  margin-top: 0;
+  max-height: 12em;
+  overflow-y: auto;
 }
 .list-group-item {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 5px 10px;
   margin-bottom: -1px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -120,4 +123,10 @@ a.list-group-item:focus {
 .list-group-item.active:hover .list-group-item-text,
 .list-group-item.active:focus .list-group-item-text {
   color: #e1edf7;
+}
+
+.badge {
+  background-color: #ccc;
+  border-radius: 10px;
+  padding: 0px 10px;
 }
