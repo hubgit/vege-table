@@ -64,6 +64,12 @@ Polymer('leaf-miner', {
               value = parseInt(value);
             }
             break;
+
+          case 'float':
+            if (!(value instanceof Number)) {
+              value = parseFloat(value);
+            }
+            break;
         }
       }
 

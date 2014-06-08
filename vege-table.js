@@ -239,6 +239,10 @@ Polymer('vege-table', {
       case 'number':
       case 'float':
         sortFunction = function(a, b) {
+          if (!a && !b) {
+            return 0;
+          }
+
           return descending ? b - a : a - b;
         };
         break;
@@ -419,7 +423,8 @@ Polymer('vege-table', {
 
     var builder = this.shadowRoot.getElementById('builder');
     builder.addSuggestedLeaf(field);
-    builder.scrollIntoView();
+
+    this.shadowRoot.querySelector('doc-leaf:last-of-type').scrollIntoView();
   },
 
   guessType: function(key, value) {
