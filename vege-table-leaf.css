@@ -16,6 +16,7 @@ pre {
 
 :host > div {
   max-height: 6em;
+  overflow-y: auto;
 }
 
 :host > div.leaf-content-type-object {

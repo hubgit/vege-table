@@ -25,8 +25,8 @@ Polymer('vege-table-leaf', {
     }
 
     switch (this.type) {
-      case 'json':
-      return JSON.stringify(this.value, null, '  ');
+      //case 'json':
+      //return JSON.stringify(this.value, null, '  ');
 
       case 'number':
       return Math.round(this.value);

@@ -39,15 +39,34 @@ Polymer('vege-table', {
     this.tableItems = [];
     this.views = [];
 
-    var matches = window.location.search.match(/db=([\w-]+)/);
+    var params = this.readParameters();
 
-    if (matches) {
-      this.db = matches[1];
+    if (params.db) {
+      this.db = params.db;
     }
 
     if (!this.db) {
-      this.loadDescriptionFile();
+      if (params.gist) {
+        this.importURL = 'https://api.github.com/gists/' + params.gist + '/description.json';
+        this.importDescriptionURL();
+      } else {
+        this.loadDescriptionFile();
+      }
     }
+  },
+
+  readParameters: function() {
+    var params = {};
+
+    window.location.search.substring(1).split(/&/).forEach(function(part) {
+      var parts = part.split('=');
+      var key = decodeURIComponent(parts[0]);
+      var value = decodeURIComponent(parts[1]);
+
+      params[key] = value;
+    });
+
+    return params;
   },
 
   dbChanged: function() {
@@ -358,9 +377,7 @@ Polymer('vege-table', {
       return sortNull(av, bv) || sortFunction(av, bv);
     });
 
-    if (this.filter) {
-      this.filterItems();
-    }
+    this.filterItems();
   },
 
   moveLeaf: function(event, details, sender) {
@@ -397,13 +414,13 @@ Polymer('vege-table', {
     });
   },
 
-  buildFetch: function(type, key) {
+  buildFetch: function(type, key, path) {
     switch (type) {
       case 'url':
         return 'var resource = new Resource(' + key + ');\n\nreturn resource.get(\'json\');';
 
       default:
-        return 'return ' + key;
+        return 'return item.' + path + '[\'' + key + '\'];';
     }
   },
 
@@ -411,12 +428,20 @@ Polymer('vege-table', {
     var path = sender.getAttribute('data-path');
     var key = sender.getAttribute('data-key');
 
+    // use just the last part of the URL as the property name
+    var matches = key.match(/\/([^\/]+)$/);
+
+    var shortKey = matches ? matches[1] : key;
+
+    var value = this.items[0][path][key];
+    var type = this.guessType(shortKey, value);
+
     var field = {
       name: path,
-      fetch: 'return item.' + path + '[\'' + key + '\'];',
-      title: this.titleCase(key),
+      fetch: this.buildFetch(type, key, path),
+      title: this.titleCase(shortKey),
       depends: [path],
-      type: 'text',
+      type: type,
     };
 
     this.$.overlay.opened = false;
@@ -424,7 +449,7 @@ Polymer('vege-table', {
     var builder = this.shadowRoot.getElementById('builder');
     builder.addSuggestedLeaf(field);
 
-    this.shadowRoot.querySelector('doc-leaf:last-of-type').scrollIntoView();
+    builder.shadowRoot.querySelector('doc-leaf:last-of-type').scrollIntoView();
   },
 
   guessType: function(key, value) {
@@ -452,7 +477,8 @@ Polymer('vege-table', {
             return 'url';
 
           case 'title':
-            return 'longtext';
+          case 'name':
+            return 'text';
         }
 
         if (stringType === '[object String]' && value.length > 50) {
@@ -616,30 +642,54 @@ Polymer('vege-table', {
   },
 
   saveDataCSVFile: function() {
-    var csvLeafTypes = ['identifier', 'number', 'float', 'text', 'longtext', 'boolean', 'url', 'date'];
-
     var csvLeaves = this.leaves.filter(function(leaf) {
-      return csvLeafTypes.indexOf(leaf.type) !== -1;
-    }).map(function(leaf) {
-      return leaf.name;
+      return leaf.name !== 'seed';
     });
 
-    // note: only exporting displayed items as CSV
     var rows = this.displayItems.map(function(item) {
-      return csvLeaves.map(function(leafName) {
-        var value = item[leafName];
+      return csvLeaves.map(function(leaf) {
+        var value = item[leaf.name];
 
-        if (value instanceof Date) {
-          value = value.toISOString().substring(0, 10);
-        } else if (value instanceof URL) {
-          value = value.href;
+        switch (leaf.type) {
+          case 'identifier':
+          case 'number':
+          case 'float':
+          case 'text':
+          case 'longtext':
+          case 'boolean':
+          break;
+
+          case 'url':
+          if (value instanceof URL) {
+            value = value.href;
+          }
+          break;
+
+          case 'date':
+          if (value instanceof Date) {
+            value = value.toISOString().substring(0, 10);
+          }
+          break;
+
+          case 'list':
+          if (Array.isArray(value)) {
+            value = value.join(',');
+          }
+          break;
+
+          case 'json':
+          value = JSON.stringify(value);
+          break;
         }
 
         return value;
       });
-    });
+    }.bind(this));
 
-    rows.unshift(csvLeaves);
+    // header
+    rows.unshift(csvLeaves.map(function(leaf) {
+      return leaf.name;
+    }));
 
     this.exportData(rows, 'csv', this.db + '.csv');
   },
@@ -654,15 +704,30 @@ Polymer('vege-table', {
       break;
 
     case 'csv':
+      var prepareCell = function(cell) {
+        if (!cell) {
+          return cell;
+        }
+
+        if (typeof cell !== 'string') {
+          return cell;
+        }
+
+        if (cell.indexOf('"') !== -1) {
+          // warning - problematic if the cell contains structure
+          return '"' + cell.replace(/"/g, '""') + '"';
+        }
+
+        if (cell.indexOf('\n') !== -1) {
+          return '"' + cell + '"';
+        }
+
+        return cell;
+      };
+
       // generate CSV from data rows
       output = data.map(function(row) {
-        return row.map(function(cell) {
-          if (cell && typeof cell === 'string' && cell.indexOf('"') !== -1) {
-            return '"' + cell.toString().replace(/"/g, '""') + '"';
-          } else {
-            return cell;
-          }
-        }).join(',');
+        return row.map(prepareCell).join(',');
       }).join('\n');
 
       this.downloadDataAsFile(output, 'text/csv', filename);
@@ -700,9 +765,17 @@ Polymer('vege-table', {
   loadDescriptionFile: function() {
     var url = this.descriptionFile || 'description.json';
 
+    this.loadDescriptionURL(url);
+  },
+
+  loadDescriptionURL: function(url) {
     this.loadJSON(url).then(function(response) {
       this.importDescription(response);
     }.bind(this));
+  },
+
+  importDescriptionURL: function() {
+    this.loadDescriptionURL(this.importURL);
   },
 
   importDescriptionFile: function(event, details, sender) {

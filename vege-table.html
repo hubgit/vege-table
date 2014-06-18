@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="vege-table.css">
 
-    <article-metadata></article-metadata>
+    <article-metadata storage="{{ db }}"></article-metadata>
 
     <tuber-storage id="storage" storage="{{ db }}"
       seed="{{ seed }}"
@@ -58,28 +58,50 @@
       <div class="col-md-3" id="views-column">
         <!-- views -->
         <template repeat="{{ view, index in views }}">
-          <data-view
-            view="{{ view }}"
-            items="{{ displayItems }}"
-            leaves="{{ leaves }}"
-            storage="{{ db }}"
-            filter="{{ filter }}"
-            data-view-index="{{ index }}"
-            on-remove-view="{{ removeView }}"
-            on-view-changed="{{ saveViews }}"
-            on-filter="{{ filterTable }}"
-            on-export-summary="{{ exportSummary }}"
-            on-export-values="{{ exportValues }}"></data-view>
+          <template if="{{ view.type != 'map' }}">
+            <data-view
+              view="{{ view }}"
+              items="{{ displayItems }}"
+              leaves="{{ leaves }}"
+              storage="{{ db }}"
+              filter="{{ filter }}"
+              data-view-index="{{ index }}"
+              on-remove-view="{{ removeView }}"
+              on-view-changed="{{ saveViews }}"
+              on-filter="{{ filterTable }}"
+              on-export-summary="{{ exportSummary }}"
+              on-export-values="{{ exportValues }}"></data-view>
+          </template>
         </template>
 
-        <div class="panel-action">
-          <button type="button" class="btn btn-default btn-xs"
-            on-click="{{ addView }}"><span
-            class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
-        </div>
+        <template if="{{ db }}">
+          <div class="panel-action">
+            <button type="button" class="btn btn-default btn-xs"
+              on-click="{{ addView }}"><span
+              class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
+          </div>
+        </template>
       </div>
 
       <div class="col-md-9" id="data-column">
+        <!-- wide views -->
+        <template repeat="{{ view, index in views }}">
+          <template if="{{ view.type == 'map' }}">
+            <data-view
+              view="{{ view }}"
+              items="{{ displayItems }}"
+              leaves="{{ leaves }}"
+              storage="{{ db }}"
+              filter="{{ filter }}"
+              data-view-index="{{ index }}"
+              on-remove-view="{{ removeView }}"
+              on-view-changed="{{ saveViews }}"
+              on-filter="{{ filterTable }}"
+              on-export-summary="{{ exportSummary }}"
+              on-export-values="{{ exportValues }}"></data-view>
+          </template>
+        </template>
+
         <!-- vege-table -->
         <template if="{{ items.length }}">
           <section class="panel panel-default">
@@ -121,7 +143,6 @@
                   </tr>
 
                   <tr class="table-actions">
-                    <th></th>
                     <template repeat="{{ leaf in leaves }}">
                     <th>
                       <!-- TODO: set 'sortable'? -->
@@ -238,6 +259,7 @@
                     </template>
                   </tr>
 
+                  <!--
                   <template repeat="{{ summariser, summariserIndex in summarisers }}">
                     <tr>
                       <th>{{ summariser.label }}</th>
@@ -253,6 +275,7 @@
                       </template>
                     </tr>
                   </template>
+                  -->
                 </tfoot>
               </table>
           </section>
@@ -283,29 +306,35 @@
       <section class="panel panel-default">
         <h2 class="panel-heading">Import / Export</h2>
 
-        <form class="panel-body">
+        <div class="panel-body">
           <div class="row">
-           <fieldset class="col-md-6">
-             <legend>Import</legend>
+            <div class="col-md-4">
+              <h3>Import Description</h3>
+              <div><input type="file" on-change="{{ importDescriptionFile }}"></div>
 
-             <h3>Description</h3>
-             <div><input type="file" on-change="{{ importDescriptionFile }}"></div>
+              <h3>Import Data</h3>
+              <div><input type="file" on-change="{{ importDataFile }}"></div>
+            </div>
 
-             <h3>Data</h3>
-             <div><input type="file" on-change="{{ importDataFile }}"></div>
-           </fieldset>
+            <div class="col-md-4">
+              <form on-submit="{{ importDescriptionURL }}">
+                <h3>Fetch Description</h3>
+                <div class="form-controls">
+                  <input type="url" name="url" id="url" class="form-control"
+                    placeholder="http://&hellip;" value="{{ importURL }}">
+                </div>
+                <div><button type="submit" class="btn btn-default">Import</button></div>
+              </form>
+            </div>
 
-           <fieldset class="col-md-6">
-             <legend>Export</legend>
-
-             <div class="form-actions">
-               <button type="button"
-                 class="btn btn-default"
-                 on-click="{{ export }}">Export files</button>
-             </div>
-           </fieldset>
+            <div class="col-md-4">
+              <div>
+                <h3>Export</h3>
+                <button type="button" class="btn btn-default" on-click="{{ export }}">Export files</button>
+              </div>
+            </div>
           </div>
-         </form>
+        </div>
       </section>
     </template>
 

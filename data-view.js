@@ -35,7 +35,10 @@ Polymer('data-view', {
     var leaf = this.getLeafByName(this.view.leaf);
 
     this.data = this.reducers[this.view.type](this.items, leaf);
-    this.viewData = this.data.slice(0, 50); // TODO: configurable
+
+    if (this.view.type === 'counts') {
+      this.viewData = this.data.slice(0, 50); // TODO: configurable
+    }
   },
 
   getLeafByName: function(leafName) {
@@ -111,16 +114,21 @@ Polymer('data-view', {
         return null;
       }
 
+      //console.log('items', items);
+
       var geojson = {
         type: 'FeatureCollection',
-        features: items.filter(function(item) {
-          var location = item[leaf.name];
+        features: []
+      };
 
+      items.forEach(function(item) {
+        var value = item[leaf.name];
+        var locations = Array.isArray(value) ? value : [value];
+
+        locations.filter(function(location) {
           return location && Number.isFinite(location.lat) && Number.isFinite(location.lng);
-        }).map(function(item) {
-          var value = item[leaf.name];
-
-          return {
+        }).forEach(function(location) {
+          var feature = {
             type: 'Feature',
             properties: {
               name: item.seed.name,
@@ -128,11 +136,13 @@ Polymer('data-view', {
             },
             geometry: {
               type: 'Point',
-              coordinates: [value.lng, value.lat]
+              coordinates: [location.lng, location.lat]
             }
           };
-        })
-      };
+
+          geojson.features.push(feature);
+        });
+      });
 
       return geojson;
     },
