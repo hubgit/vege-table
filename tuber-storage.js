@@ -269,7 +269,7 @@ Polymer('tuber-storage', {
   },
 
   saveView: function(view) {
-    if (!view.id) {
+    if (!view._id) {
       var now = window.performance.now().toString();
       view._id = 'view_' + now;
     }
