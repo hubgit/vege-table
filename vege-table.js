@@ -46,9 +46,24 @@ Polymer('vege-table', {
     }
 
     if (!this.db) {
-      if (params.gist) {
-        this.importURL = 'https://api.github.com/gists/' + params.gist + '/description.json';
+      if (params.url) {
+        this.importURL = params.url;
         this.importDescriptionURL();
+      } else if (params.gist) {
+        var url = 'https://api.github.com/gists/' + params.gist + '/description.json';
+
+        this.loadJSON(url).then(function(gist) {
+          var description = gist.files['description.json'];
+          var data = gist.files['data.json'];
+
+          if (description && description.content) {
+            this.importDescription(JSON.parse(description.content));
+
+            if (data && data.content) {
+              this.importData(JSON.parse(data.content));
+            }
+          }
+        }.bind(this));
       } else {
         this.loadDescriptionFile();
       }
@@ -398,7 +413,6 @@ Polymer('vege-table', {
 
     this.$.storage.loadItems().then(function() {
       this.displayItems = this.items;
-      //this.updateFields();
 
       if (this.items.length) {
         this.summariseLeaves();
@@ -507,8 +521,6 @@ Polymer('vege-table', {
       return item;
     });
 
-    //this.updateFields();
-
     //if (this.db) {
       this.fetchLeaves(); // TODO: only update added items
     //}
@@ -545,7 +557,6 @@ Polymer('vege-table', {
 
   addLeaf: function(event, leaf) {
     this.$.storage.addLeaf(leaf).then(function() {
-      //this.updateFields();
       this.$.miner.updateItems(leaf);
     }.bind(this));
   },
@@ -558,8 +569,6 @@ Polymer('vege-table', {
         delete item[leaf.name];
         this.updateItem(null, item);
       }.bind(this));
-
-      //this.updateFields();
     }.bind(this));
   },
 
@@ -821,20 +830,7 @@ Polymer('vege-table', {
       }
     }.bind(this));
 
-    //this.updateFields();
-
     this.progress.leaves = 'loaded';
-
-    if (!this.db) {
-      var dataFile = this.dataFile || 'data.json';
-
-      this.loadDataFile(dataFile).then(function() {
-        console.log('data file loaded');
-      }, function(e) {
-        console.log('no data file found', e.stack);
-        //this.$.harvester.plantSeeds();
-      }.bind(this));
-    }
   },
 
   loadDataFile: function(dataFile) {
@@ -869,6 +865,8 @@ Polymer('vege-table', {
     this.leaves.forEach(function(leaf) {
       this.leafComplete(null, leaf);
     }.bind(this));
+
+    // this.loadViews(); // TODO
   },
 
   leafComplete: function(event, details) {
