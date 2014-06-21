@@ -613,7 +613,14 @@ Polymer('vege-table', {
 
     Object.keys(item).forEach(function(key) {
       if (key[0] !== '_') {
-        output[key] = item[key];
+        switch (key) {
+          case 'complete':
+          break;
+
+          default:
+          output[key] = item[key];
+          break;
+        }
       }
     });
 
