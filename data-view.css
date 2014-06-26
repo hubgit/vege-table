@@ -10,6 +10,7 @@
 .panel-heading {
   font-weight: 100;
   margin: 0;
+  font-size: 25px;
 }
 
 .list-group {
@@ -29,4 +30,16 @@
 
 .panel-body.export-actions {
   padding-bottom: 0;
+}
+
+object.spotify {
+  height: 380px;
+}
+
+th {
+  white-space: nowrap;
+}
+
+td {
+  background: white;
 }

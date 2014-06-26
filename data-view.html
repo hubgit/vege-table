@@ -12,10 +12,6 @@
       <template if="{{ !editing }}">
         <h2 class="panel-heading">{{ view.title }}</h2>
 
-        <template if="{{ view.type  == 'map' }}">
-          <leaflet-map data="{{ data }}" height="30rem"></leaflet-map>
-        </template>
-
         <template if="{{ view.type == 'counts' }}">
           <div class="list-group">
             <template repeat="{{ item in viewData }}">
@@ -34,6 +30,31 @@
                 on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
             </template>
           </div>
+        </template>
+
+        <template if="{{ view.type  == 'map' }}">
+          <leaflet-map data="{{ data }}" height="30rem"></leaflet-map>
+        </template>
+
+        <template if="{{ view.type  == 'spotify' }}">
+          <object class="spotify" data="https://embed.spotify.com/?url={{ data }}" type="text/html"></object>
+        </template>
+
+        <template if="{{ view.type  == 'grid' }}">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                <th template repeat="{{ x in data.x }}">{{ x }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr template repeat="{{ y in data.y }}">
+                <th>{{ y }}</th>
+                <td template repeat="{{ x in data.x }}">{{ data.counts[y][x] }}</td>
+              </tr>
+            </tbody>
+          </table>
         </template>
 
         <figcaption class="panel-body">
@@ -79,22 +100,32 @@
 
           <div class="form-group">
             <label for="type">Type</label>
-            <select id="type" value="{{ editing.type }}">
+            <select id="type" value="{{ editing.type }}" required>
               <option>Select a type of view</option>
               <option value="counts">Counts</option>
               <option value="nulls">Nulls</option>
               <option value="map">Map</option>
+              <option value="spotify">Spotify</option>
+              <option value="grid">Grid</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="leaf">Leaf</label>
-            <select id="leaf" value="{{ editing.leaf }}">
+            <select id="leaf" value="{{ editing.leaf }}" required>
               <option>Select a leaf</option>
               <template repeat="{{ leaf in leaves }}">
                 <option value="{{ leaf.name }}">{{ leaf.title }}</option>
               </template>
             </select>
+            <template if="{{ editing.type == 'grid' }}">
+              <select id="antileaf" value="{{ editing.antileaf }}" required>
+                <option>Select another leaf</option>
+                <template repeat="{{ leaf in leaves }}">
+                  <option value="{{ leaf.name }}">{{ leaf.title }}</option>
+                </template>
+              </select>
+            </template>
           </div>
 
           <div class="form-actions">

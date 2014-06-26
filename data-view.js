@@ -32,9 +32,8 @@ Polymer('data-view', {
   },
 
   regenerate: function() {
-    var leaf = this.getLeafByName(this.view.leaf);
-
-    this.data = this.reducers[this.view.type](this.items, leaf);
+    var reducer = this.reducers[this.view.type].bind(this);
+    this.data = reducer(this.items);
 
     if (this.view.type === 'counts') {
       this.viewData = this.data.slice(0, 50); // TODO: configurable
@@ -109,10 +108,12 @@ Polymer('data-view', {
   },
 
   reducers: {
-    map: function(items, leaf) {
+    map: function(items) {
       if (!items.length) {
         return null;
       }
+
+      var leafName = this.view.leaf;
 
       //console.log('items', items);
 
@@ -122,10 +123,17 @@ Polymer('data-view', {
       };
 
       items.forEach(function(item) {
-        var value = item[leaf.name];
+        var value = item[leafName];
         var locations = Array.isArray(value) ? value : [value];
 
         locations.filter(function(location) {
+          if (!location) {
+            return false;
+          }
+
+          location.lat = parseFloat(location.lat);
+          location.lng = parseFloat(location.lng);
+
           return location && Number.isFinite(location.lat) && Number.isFinite(location.lng);
         }).forEach(function(location) {
           var feature = {
@@ -147,9 +155,116 @@ Polymer('data-view', {
       return geojson;
     },
 
-    nulls: function(items, leaf) {
+    spotify: function(items) {
+      var leafName = this.view.leaf;
+
+      var tracks = [];
+
+      items.forEach(function(item) {
+        var value = item[leafName];
+
+        // null or undefined
+        if (value === null || value === undefined || value === '') {
+          return;
+        }
+
+        if (Array.isArray(value)) {
+          value.forEach(function(value) {
+            tracks.push(value);
+          });
+
+          return;
+        }
+
+        tracks.push(value);
+      });
+
+      return 'spotify:trackset:vege-table:' + tracks.map(function(track) {
+        return typeof track === 'object' ? track.uri : track;
+      }).filter(function(value, index, self) {
+        return self.indexOf(value) === index;
+      }).slice(0,50).map(function(uri) {
+        return uri.replace(/^spotify:track:/, '');
+      }).join(',');
+    },
+
+    grid: function(items) {
+      var leafName = this.view.leaf;
+      var antileafName = this.view.antileaf;
+
+      var counts = {};
+      var columnCounts = {};
+      var rowCounts = {};
+
+      items.forEach(function(item) {
+        var value = item[leafName];
+        var antiValue = item[antileafName];
+
+        if (!Array.isArray(value)) {
+          value = [value];
+        }
+
+        if (!Array.isArray(antiValue)) {
+          antiValue = [antiValue];
+        }
+
+        value.forEach(function(value) {
+          antiValue.forEach(function(antiValue) {
+            if (typeof columnCounts[value] === 'undefined') {
+              columnCounts[value] = 0;
+            }
+
+            columnCounts[value]++;
+
+            if (typeof rowCounts[antiValue] === 'undefined') {
+              rowCounts[antiValue] = 0;
+            }
+
+            rowCounts[antiValue]++;
+
+            if (typeof counts[antiValue] === 'undefined') {
+              counts[antiValue] = {};
+            }
+
+            if (typeof counts[antiValue][value] === 'undefined') {
+              counts[antiValue][value] = 0;
+            }
+
+            counts[antiValue][value]++;
+          });
+        });
+      });
+
+      var columns = Object.keys(columnCounts).sort(function(a, b) {
+        return columnCounts[b] - columnCounts[a];
+      }).slice(0, 10);
+
+      var rows = Object.keys(rowCounts).sort(function(a, b) {
+        return rowCounts[b] - rowCounts[a];
+      }).slice(0, 10);
+
+      var finalCounts = {};
+
+      rows.forEach(function(row) {
+        finalCounts[row] = {};
+
+        columns.forEach(function(column) {
+          finalCounts[row][column] = counts[row][column];
+        });
+      });
+
+      return {
+        x: columns,
+        y: rows,
+        counts: finalCounts
+      };
+    },
+
+    nulls: function(items) {
+      var leafName = this.view.leaf;
+
       var counts = items.reduce(function(counts, item) {
-        if (item[leaf.name] === null || item[leaf.name] === undefined) {
+        if (item[leafName] === null || item[leafName] === undefined) {
           counts['true']++;
         } else {
           counts['false']++;
@@ -172,6 +287,8 @@ Polymer('data-view', {
     },
 
     counts: function(items, leaf) {
+      var leaf = this.getLeafByName(this.view.leaf);
+
       var leafName = leaf.name;
       var leafType = leaf.type;
 
