@@ -115,6 +115,7 @@ input[type=file] {
 .panel h2,
 .panel h3:first-of-type {
   margin-top: 0;
+  font-size: 25px;
 }
 
 .panel h3 {

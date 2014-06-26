@@ -18,13 +18,13 @@
     <!-- viewing -->
     <template if="{{ !editing }}">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <template if="{{ seed.description }}">
             <marked-element text="{{ seed.description }}"></marked-element>
           </template>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-8">
           <!--
           <template if="{{ seed.data }}">
               <pre id="fetch"

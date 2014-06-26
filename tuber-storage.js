@@ -277,8 +277,8 @@ Polymer('tuber-storage', {
     var request = this.put(view);
 
     request.then(function(result) {
-      view._rev = result.rev;
       console.log('saved view', view);
+      view._rev = result.rev;
     }.bind(this)).catch(function(err) {
       console.error('error updating view', err);
     });

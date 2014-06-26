@@ -1,7 +1,5 @@
 pre {
   font-size: 90%;
-  max-height: 40em;
-  overflow-y: auto;
 }
 
 pre[language="csv"] {
