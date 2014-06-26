@@ -4,7 +4,7 @@
 Polymer('seed-harvester', {
   db: '',
   progress: '',
-  delimiter: ',',
+  delimiter: '"',
   ready: function() {
     this.seed = this.seed || {
       data: '',
@@ -85,7 +85,7 @@ Polymer('seed-harvester', {
           collection.items = new Function('document', seed.itemsSelector);
 
           var text = seed.itemsSelector.split(/\n/).map(function(line) {
-            return '\t' + line.trim();
+            return '\t' + line.replace(/\s+$/, '');
           }).join('\n');
 
           parts.push('collection.items = function(document) {\n' + text + '\n}');
