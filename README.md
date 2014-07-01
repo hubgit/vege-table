@@ -67,5 +67,6 @@ There are several important things to bear in mind:
 * [iPython Notebook](http://ipython.org/notebook.html)
 * [ScraperWiki](https://scraperwiki.com/)
 * [import.io](https://import.io)
+* [Yahoo Pipes](http://pipes.yahoo.com/pipes/)
 * Discussions in the [W3C CSV on the Web Working Group](http://www.w3.org/2013/csvw/), and the work of group chairs Jeni Tennison and Dan Brickley.
 
