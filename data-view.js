@@ -241,10 +241,18 @@ Polymer('data-view', {
             return;
           }
 
+          if (typeof value == 'object') {
+            value = value.name;
+          }
+
           antiValue.forEach(function(antiValue) {
             // null or undefined
             if (antiValue === null || antiValue === undefined || antiValue === '') {
               return;
+            }
+
+            if (typeof antiValue == 'object') {
+              antiValue = antiValue.name;
             }
 
             if (typeof columnCounts[value] === 'undefined') {
