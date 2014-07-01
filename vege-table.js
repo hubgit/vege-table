@@ -635,7 +635,8 @@ Polymer('vege-table', {
   saveDescriptionFile: function() {
     var data = {
       seed: this.publicItem(this.seed),
-      leaves: this.leaves.map(this.publicItem)
+      leaves: this.leaves.map(this.publicItem),
+      views: this.views.map(this.publicItem)
     };
 
     this.exportData(data, 'json', this.db + '-description.json');
@@ -812,7 +813,6 @@ Polymer('vege-table', {
 
     if (this.db) {
       this.saveSeed();
-      this.saveViews();
     }
 
     data.leaves.forEach(function(leaf) {
@@ -827,6 +827,9 @@ Polymer('vege-table', {
     }.bind(this));
 
     this.progress.leaves = 'loaded';
+
+    this.views = data.views || [];
+    this.saveViews();
   },
 
   loadDataFile: function(dataFile) {
