@@ -211,11 +211,7 @@ Polymer('vege-table', {
     this.summarised = true;
   },
 
-  exportSummary: function(event, details) {
-    this.exportData(details.rows, 'csv', this.db + '-' + details.leaf + '.csv');
-  },
-
-  exportValues: function(event, details) {
+  exportItems: function(event, details) {
     this.exportData(details.rows, 'csv', this.db + '-' + details.leaf + '.csv');
   },
 

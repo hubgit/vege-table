@@ -74,7 +74,7 @@ Polymer('data-view', {
 
     rows.unshift([this.view.leaf, 'count']);
 
-    this.fire('export-summary', {
+    this.fire('export-items', {
       rows: rows,
       leaf: this.view.leaf
     });
@@ -85,7 +85,7 @@ Polymer('data-view', {
       return [row.key];
     });
 
-    this.fire('export-values', {
+    this.fire('export-items', {
       rows: rows,
       leaf: this.view.leaf
     });
