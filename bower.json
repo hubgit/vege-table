@@ -12,7 +12,7 @@
     "bower_components"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#0.2.4",
+    "polymer": "Polymer/polymer#0.3.3",
     "bootstrap": "twbs/bootstrap#master",
     "marked-element": "hubgit/marked-element#master",
     "syntax-highlight": "hubgit/syntax-highlight#master",
