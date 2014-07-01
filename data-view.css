@@ -43,3 +43,17 @@ th {
 td {
   background: white;
 }
+
+.view-gallery {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.view-gallery a {
+  display: inline-block;
+  margin: 5px;
+}
+
+.view-gallery img {
+  max-height: 30rem;
+}

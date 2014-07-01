@@ -40,6 +40,14 @@
           <object class="spotify" data="https://embed.spotify.com/?url={{ data }}" type="text/html"></object>
         </template>
 
+        <template if="{{ view.type == 'gallery' }}">
+          <div class="view-gallery">
+            <template repeat="{{ image in data }}">
+              <a href="{{ image }}" target="_blank"><img src="{{ image }}"></a>
+            </template>
+          </div>
+        </template>
+
         <template if="{{ view.type  == 'grid' }}">
           <table class="table table-striped">
             <thead>
@@ -107,6 +115,7 @@
               <option value="map">Map</option>
               <option value="spotify">Spotify</option>
               <option value="grid">Grid</option>
+              <option value="gallery">Gallery</option>
             </select>
           </div>
 

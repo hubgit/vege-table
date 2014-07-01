@@ -188,6 +188,33 @@ Polymer('data-view', {
       }).join(',');
     },
 
+    gallery: function(items) {
+      var leafName = this.view.leaf;
+
+      var images = [];
+
+      items.forEach(function(item) {
+        var value = item[leafName];
+
+        // null or undefined
+        if (value === null || value === undefined || value === '') {
+          return;
+        }
+
+        if (Array.isArray(value)) {
+          value.forEach(function(value) {
+            images.push(value);
+          });
+
+          return;
+        }
+
+        images.push(value);
+      });
+
+      return images.slice(0, 50);
+    },
+
     grid: function(items) {
       var leafName = this.view.leaf;
       var antileafName = this.view.antileaf;
@@ -209,7 +236,17 @@ Polymer('data-view', {
         }
 
         value.forEach(function(value) {
+          // null or undefined
+          if (value === null || value === undefined || value === '') {
+            return;
+          }
+
           antiValue.forEach(function(antiValue) {
+            // null or undefined
+            if (antiValue === null || antiValue === undefined || antiValue === '') {
+              return;
+            }
+
             if (typeof columnCounts[value] === 'undefined') {
               columnCounts[value] = 0;
             }
@@ -237,11 +274,11 @@ Polymer('data-view', {
 
       var columns = Object.keys(columnCounts).sort(function(a, b) {
         return columnCounts[b] - columnCounts[a];
-      }).slice(0, 10);
+      }).slice(0, 25);
 
       var rows = Object.keys(rowCounts).sort(function(a, b) {
         return rowCounts[b] - rowCounts[a];
-      }).slice(0, 10);
+      }).slice(0, 50);
 
       var finalCounts = {};
 

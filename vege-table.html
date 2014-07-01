@@ -58,7 +58,7 @@
       <div class="col-md-3" id="views-column">
         <!-- views -->
         <template repeat="{{ view, index in views }}">
-          <template if="{{ view.type != 'map' &amp;&amp; view.type != 'grid' }}">
+          <template if="{{ view.type != 'map' &amp;&amp; view.type != 'grid' &amp;&amp; view.type != 'gallery' }}">
             <data-view
               view="{{ view }}"
               items="{{ displayItems }}"
@@ -86,7 +86,7 @@
       <div class="col-md-9" id="data-column">
         <!-- wide views -->
         <template repeat="{{ view, index in views }}">
-          <template if="{{ view.type == 'map' || view.type == 'grid' }}">
+          <template if="{{ view.type == 'map' || view.type == 'grid' || view.type == 'gallery' }}">
             <data-view
               view="{{ view }}"
               items="{{ displayItems }}"

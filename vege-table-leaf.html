@@ -42,7 +42,7 @@
         </template>
 
         <template if="{{ type == 'image' }}">
-          <img src="{{ value }}"></img>
+          <a href="{{ value }}" target="_blank"><img src="{{ value }}"></img></a>
         </template>
 
         <template if="{{ type == 'element' }}">
