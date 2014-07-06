@@ -47,8 +47,7 @@ Polymer('vege-table', {
 
     if (!this.db) {
       if (params.url) {
-        this.importURL = params.url;
-        this.importDescriptionURL();
+        this.loadDescriptionURL(params.url);
       } else if (params.gist) {
         var url = 'https://api.github.com/gists/' + params.gist + '/description.json';
 
@@ -785,10 +784,6 @@ Polymer('vege-table', {
     this.loadJSON(url).then(function(response) {
       this.importDescription(response);
     }.bind(this));
-  },
-
-  importDescriptionURL: function() {
-    this.loadDescriptionURL(this.importURL);
   },
 
   importDescriptionFile: function(event, details, sender) {
