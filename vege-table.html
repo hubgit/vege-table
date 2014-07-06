@@ -54,8 +54,16 @@
       </div>
     </section>
 
-    <div class="row">
-      <div class="col-md-3" id="views-column">
+    <template if="{{ db }}">
+      <div class="panel-action">
+        <button type="button" class="btn btn-default btn-xs"
+          on-click="{{ addView }}"><span
+          class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
+      </div>
+    </template>
+
+    <div class="{{ { row: views.length } | tokenList }}">
+      <div class="{{ { 'col-md-3': views.length } | tokenList }}" id="views-column">
         <!-- views -->
         <template repeat="{{ view, index in views }}">
           <template if="{{ view.type != 'map' &amp;&amp; view.type != 'grid' &amp;&amp; view.type != 'gallery' }}">
@@ -72,17 +80,9 @@
               on-export-items="{{ exportItems }}"></data-view>
           </template>
         </template>
-
-        <template if="{{ db }}">
-          <div class="panel-action">
-            <button type="button" class="btn btn-default btn-xs"
-              on-click="{{ addView }}"><span
-              class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
-          </div>
-        </template>
       </div>
 
-      <div class="col-md-9" id="data-column">
+      <div class="{{ { 'col-md-9': views.length } | tokenList }}" id="data-column">
         <!-- wide views -->
         <template repeat="{{ view, index in views }}">
           <template if="{{ view.type == 'map' || view.type == 'grid' || view.type == 'gallery' }}">
