@@ -1,0 +1,62 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="article-title" attributes="value storage">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+
+    <style>
+    :host {
+      display: block;
+      margin: 1rem 0 0;
+    }
+
+    form {
+      margin: 2rem 0;
+    }
+
+    [editable] {
+      padding: 5px;
+      outline: 2px solid transparent;
+    }
+
+    [editable]:hover {
+      outline-color: #aaf;
+      cursor: pointer;
+    }
+
+    .btn .glyphicon {
+      margin-right: 0.5rem;
+    }
+    </style>
+
+    <!-- viewing -->
+    <template if="{{ !editing }}">
+      <template if="{{ storage &amp;&amp; !value }}">
+        <button class="btn btn-default btn-xs" on-click="{{ openEditor }}"><span class="glyphicon glyphicon-plus-sign"></span> Add title</button>
+      </template>
+
+      <h1 itemprop="name" on-click="{{ openEditor }}" editable>{{ value }}</h1>
+    </template>
+
+    <!-- editing -->
+    <template if="{{ editing }}">
+      <h1 editable>{{ editing }}</h1>
+
+      <form on-submit="{{ closeEditor }}">
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-group-addon" for="title">Title</label>
+            <input type="text" id="title" class="form-control" value="{{ editing }}">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </template>
+  </template>
+
+  <script src="article-title.js"></script>
+</polymer-element>

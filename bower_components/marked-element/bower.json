@@ -1,0 +1,7 @@
+{
+  "name": "marked-element",
+  "dependencies": {
+    "marked": "*",
+    "polymer": "Polymer/polymer#0.3.3"
+  }
+}

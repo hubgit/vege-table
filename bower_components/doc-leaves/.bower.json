@@ -1,0 +1,26 @@
+{
+  "name": "doc-leaves",
+  "main": "article-metadata.html",
+  "homepage": "http://git.macropus.org/doc-leaves",
+  "authors": [
+    "Alf Eaton"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3",
+    "bootstrap": "twbs/bootstrap#master"
+  },
+  "_release": "7a56a3db7c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "7a56a3db7c18ebb68ac98a72d67ce7e04e2fe4d1"
+  },
+  "_source": "git://github.com/hubgit/doc-leaves.git",
+  "_target": "master",
+  "_originalSource": "hubgit/doc-leaves"
+}

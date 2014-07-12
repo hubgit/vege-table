@@ -1,0 +1,26 @@
+{
+  "name": "leaflet-map",
+  "main": "leaflet-map.html",
+  "authors": [
+    "Alf Eaton"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/hubgit/leaflet-map",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3",
+    "leaflet.markercluster": "~0.4.0"
+  },
+  "_release": "14e3a49f47",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "14e3a49f476594320c7e6dcef0a0e2595c3788c7"
+  },
+  "_source": "git://github.com/hubgit/leaflet-map.git",
+  "_target": "master",
+  "_originalSource": "hubgit/leaflet-map"
+}

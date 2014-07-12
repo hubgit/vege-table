@@ -1,0 +1,28 @@
+{
+  "name": "syntax-highlight",
+  "version": "0.0.3",
+  "authors": [
+    "Alf Eaton <eaton.alf@gmail.com"
+  ],
+  "description": "A Polymer element for syntax highlighting with Prism.js",
+  "main": "src/prism-js.html",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "highlighting",
+    "syntax"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3",
+    "prismjs": "*"
+  }
+}

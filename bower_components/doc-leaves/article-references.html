@@ -1,0 +1,31 @@
+<polymer-element name="article-references">
+<template>
+  <section is="article-references">
+    <h2>References</h2>
+
+    <template if="{{ references.length }}">
+      <ol>
+        <template repeat="{{ references }}">
+          <li itemprop="citation" itemscope itemtype="CreativeWork">
+            <a itemprop="url" href="{{ url }}"
+              target="_blank"><span itemprop="name">{{ title }}</span></a>.
+
+            <template if="{{ year }}">(<span itemprop="datePublished">{{ year}}</span>)</template>
+
+            <template if="{{ authors }}">
+              <template repeat="{{ authors }}"><span itemprop="creator">{{ name }}</span></template>.
+            </template>
+          </li>
+        </template>
+      </ol>
+    </template>
+
+    <template if="{{ !references.length }}">
+      <button type="button" class="btn btn-default"
+              on-click="{{ buildReferences }}">Build references</button>
+    </template>
+  </section>
+</template>
+
+<script src="article-references.js"></script>
+</polymer-element>

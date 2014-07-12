@@ -1,0 +1,151 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- map -->
+<link rel="import" href="../leaflet-map/leaflet-map.html">
+
+<polymer-element name="data-view" attributes="view items leaves storage filter">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="data-view.css">
+
+    <figure class="panel panel-default">
+      <template if="{{ !editing }}">
+        <h2 class="panel-heading">{{ view.title }}</h2>
+
+        <template if="{{ view.type == 'counts' }}">
+          <div class="list-group">
+            <template repeat="{{ item in viewData }}">
+              <div data-filter-value="{{ item.key }}"
+                class="leaf-count list-group-item {{ item | activeItem }}"
+                on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
+            </template>
+          </div>
+        </template>
+
+        <template if="{{ view.type == 'nulls' }}">
+          <div class="list-group">
+            <template repeat="{{ item in viewData }}">
+              <div data-filter-value="{{ item.key }}"
+                class="leaf-count list-group-item {{ item | activeItem }}"
+                on-click="{{ filterTable }}"><span class="badge">{{ item.count }}</span>{{ item.key }}</div>
+            </template>
+          </div>
+        </template>
+
+        <template if="{{ view.type  == 'map' }}">
+          <leaflet-map data="{{ data }}" height="30rem"></leaflet-map>
+        </template>
+
+        <template if="{{ view.type  == 'spotify' }}">
+          <object class="spotify" data="https://embed.spotify.com/?url={{ data }}" type="text/html"></object>
+        </template>
+
+        <template if="{{ view.type == 'gallery' }}">
+          <div class="view-gallery">
+            <template repeat="{{ image in data }}">
+              <a href="{{ image }}" target="_blank"><img src="{{ image }}"></a>
+            </template>
+          </div>
+        </template>
+
+        <template if="{{ view.type  == 'grid' }}">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                <th template repeat="{{ x in data.x }}">{{ x }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr template repeat="{{ y in data.y }}">
+                <th>{{ y }}</th>
+                <td template repeat="{{ x in data.x }}">{{ data.counts[y][x] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
+
+        <figcaption class="panel-body">
+          <marked-element text="{{ view.description }}"></marked-element>
+
+          <template if="{{ storage }}">
+            <div class="form-actions">
+              <button type="button" class="btn btn-danger btn-sm"
+                title="Remove"
+                on-click="{{ removeView }}"><span class="glyphicon glyphicon-trash"></span></button>
+              <button type="button" class="btn btn-primary btn-sm"
+                title="Edit"
+                on-click="{{ openEditor }}"><span class="glyphicon glyphicon-edit"></span></button>
+              <button type="button" class="btn btn-success btn-sm"
+                title="Regenerate"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-refresh"></span></button>
+              <button type="button" class="btn btn-default btn-sm"
+                on-click="{{ exportSummary }}"
+                title="Export summary"
+                data-leaf-index="{{ summaryIndex }}"
+                data-summariser-index="{{ summariserIndex }}"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-download"></span></button>
+              <button type="button" class="btn btn-default btn-sm"
+                on-click="{{ exportValues }}"
+                title="Export values"
+                data-leaf-index="{{ summaryIndex }}"
+                on-click="{{ regenerate }}"><span class="glyphicon glyphicon-download-alt"></span></button>
+            </div>
+          </template>
+        </figcaption>
+      </template>
+
+      <template if="{{ editing }}">
+        <h2 class="panel-heading">{{ editing.title }}</h2>
+
+        <form class="panel-body" on-submit="{{ closeEditor }}">
+          <div class="form-group">
+            <span class="input-group">
+              <label class="input-group-addon" for="title">Title</label>
+              <input type="text" class="form-control" id="title" value="{{ editing.title }}">
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" value="{{ editing.type }}" required>
+              <option>Select a type of view</option>
+              <option value="counts">Counts</option>
+              <option value="nulls">Nulls</option>
+              <option value="map">Map</option>
+              <option value="spotify">Spotify</option>
+              <option value="grid">Grid</option>
+              <option value="gallery">Gallery</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="leaf">Leaf</label>
+            <select id="leaf" value="{{ editing.leaf }}" required>
+              <option>Select a leaf</option>
+              <template repeat="{{ leaf in leaves }}">
+                <option value="{{ leaf.name }}">{{ leaf.title }}</option>
+              </template>
+            </select>
+            <template if="{{ editing.type == 'grid' }}">
+              <select id="antileaf" value="{{ editing.antileaf }}" required>
+                <option>Select another leaf</option>
+                <template repeat="{{ leaf in leaves }}">
+                  <option value="{{ leaf.name }}">{{ leaf.title }}</option>
+                </template>
+              </select>
+            </template>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-danger"
+              on-click="{{ cancelEditor }}">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </template>
+    </figure>
+  </template>
+
+  <script src="data-view.js"></script>
+</polymer-element>

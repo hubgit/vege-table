@@ -1,0 +1,23 @@
+{
+  "name": "pouch-db",
+  "version": "0.0.1",
+  "homepage": "https://github.com/hubgit/pouch-db",
+  "main": "pouch-db.html",
+  "keywords": [
+    "polymer"
+  ],
+  "authors": [
+    "Alf Eaton"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3"
+  }
+}

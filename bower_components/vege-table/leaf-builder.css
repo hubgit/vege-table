@@ -1,0 +1,27 @@
+.list-group {
+  max-width: 30em;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background: #eee;
+}
+
+.doc-leaf {
+  clear: both;
+}
+
+.doc-leaf:not(:last-of-type) {
+  border-bottom: 1px solid #ddd;
+}
+
+.doc-leaf .form-actions {
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-weight: 200;
+}

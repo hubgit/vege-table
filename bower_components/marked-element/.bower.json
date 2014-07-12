@@ -1,0 +1,17 @@
+{
+  "name": "marked-element",
+  "dependencies": {
+    "marked": "*",
+    "polymer": "Polymer/polymer#0.3.3"
+  },
+  "homepage": "https://github.com/hubgit/marked-element",
+  "_release": "6c49d24633",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6c49d24633b95d4379cf7f970b7acfc6c2d994e2"
+  },
+  "_source": "git://github.com/hubgit/marked-element.git",
+  "_target": "master",
+  "_originalSource": "hubgit/marked-element"
+}

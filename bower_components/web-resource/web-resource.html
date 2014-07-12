@@ -1,0 +1,101 @@
+<link rel="import" href="parsers.html">
+
+<script src="queue.js"></script>
+<script src="request.js"></script>
+<script src="resource.js"></script>
+<script src="collection.js"></script>
+<script src="context.js"></script>
+
+<polymer-element name="resource-queue">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <style>
+    :host { display: block; }
+    .panel-heading { margin: 0; font-weight: 100; }
+    .log { white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis; }
+    .label.status { display: inline-block; width: 3rem; }
+    </style>
+
+    <template if="{{ queues.length }}">
+      <div class="panel panel-default">
+        <h2 class="panel-heading">Queues</h2>
+
+        <ul class="list-group">
+          <template repeat="{{ queue, queueIndex in queues }}">
+            <li class="list-group-item">
+              <div>
+                <span class="label label-info">{{ queue.name }}</span>
+                <span class="badge">{{ queue.items.length + queue.counter }}</span>
+
+                <template if="{{ queue.items.length }}">
+                  <template if="{{ queue.stopped }}">
+                    <button class="btn btn-xs btn-default" type="button"
+                      on-click="{{ startQueue }}" data-queue-index="{{ queueIndex }}">continue</button>
+                  </template>
+
+                  <template if="{{ !queue.stopped }}">
+                    <button class="btn btn-xs btn-default" type="button"
+                      on-click="{{ stopQueue }}" data-queue-index="{{ queueIndex }}">pause</button>
+                  </template>
+
+                  <button class="btn btn-xs btn-danger" type="button"
+                    on-click="{{ clearQueue }}" data-queue-index="{{ queueIndex }}">clear</button>
+                </template>
+              </div>
+
+              <template repeat="{{ log in queue.logs }}">
+                <div class="log">
+                  <span class="label status {{ log.status | statusClass }}">{{ log.status }}</span>
+                  <a href="{{ log.url }}" target="_blank">{{ log.url }}</a>
+                </div>
+              </template>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </template>
+  </template>
+
+  <script>
+  Polymer('resource-queue', {
+    ready: function() {
+      this.queues = window.queuesList;
+    },
+
+    stopQueue: function(event, details, sender) {
+      var index = sender.getAttribute('data-queue-index');
+      this.queues[index].stop();
+    },
+
+    startQueue: function(event, details, sender) {
+      var index = sender.getAttribute('data-queue-index');
+      this.queues[index].start();
+    },
+
+    clearQueue: function(event, details, sender) {
+      var index = sender.getAttribute('data-queue-index');
+      this.queues[index].clear();
+    },
+
+    statusClass: function(status) {
+      if (status >= 500) {
+        return 'label-danger';
+      }
+
+      if (status >= 400) {
+        return 'label-warning';
+      }
+
+      if (status >= 300) {
+        return 'label-info';
+      }
+
+      if (status >= 200) {
+        return 'label-success';
+      }
+
+      return 'label-default';
+    }
+  });
+  </script>
+</polymer-element>

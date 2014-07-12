@@ -1,0 +1,13 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../pouch-db/pouch-db.html">
+
+<polymer-element name="tuber-storage" attributes="storage items leaves seed views progress">
+<template>
+  <style>:host { display: none; }</style>
+  <template if="{{ storage }}">
+    <pouch-db id="pouch" name="{{ storage }}"></pouch-db>
+  </template>
+</template>
+<script src="tuber-storage.js"></script>
+</polymer-element>

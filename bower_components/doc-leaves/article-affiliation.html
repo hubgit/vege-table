@@ -1,0 +1,102 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="article-affiliation" attributes="value storage">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+
+    <style>
+    :host {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    :host span:not(:last-of-type):after {
+      content: ", ";
+    }
+
+    form {
+      margin: 2rem 0;
+    }
+
+    [editable] {
+      padding: 5px;
+      outline: 2px solid transparent;
+    }
+
+    [editable]:hover {
+      outline-color: #aaf;
+      cursor: pointer;
+    }
+
+    [editable] .btn {
+      visibility: hidden;
+      margin-left: 5px;
+    }
+
+    [editable]:hover .btn {
+      visibility: visible;
+    }
+    </style>
+
+    <!-- viewing -->
+    <template if="{{ !editing }}">
+      <span on-click="{{ openEditor }}" editable>
+        <span>{{ value.department }}</span>
+        <span>{{ value.institution }}</span>
+        <span>{{ value.city }}</span>
+        <span>{{ value.country }}</span>
+
+        <template if="{{ storage }}">
+          <button class="btn btn-danger btn-xs" on-click="{{ removeItem }}"><span class="glyphicon glyphicon-trash"></span></button>
+        </template>
+      </span>
+    </template>
+
+    <!-- editing -->
+    <template if="{{ editing }}">
+      <span editable>
+        <span>{{ editing.department }}</span>
+        <span>{{ editing.institution }}</span>
+        <span>{{ editing.city }}</span>
+        <span>{{ editing.country }}</span>
+      </span>
+
+      <form on-submit="{{ closeEditor }}">
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-group-addon" for="department">Department</label>
+            <input type="text" id="department" class="form-control" value="{{ editing.department }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-group-addon" for="department">Institution</label>
+            <input type="text" id="department" class="form-control" value="{{ editing.institution }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-group-addon" for="department">City</label>
+            <input type="text" id="department" class="form-control" value="{{ editing.city }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-group-addon" for="department">Country</label>
+            <input type="text" id="department" class="form-control" value="{{ editing.country }}">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </template>
+  </template>
+
+  <script src="article-affiliation.js"></script>
+</polymer-element>

@@ -1,0 +1,34 @@
+{
+  "name": "vege-table",
+  "main": "vege-table.html",
+  "homepage": "https://git.macropus.org/vege-table",
+  "authors": [
+    "Alf Eaton"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3",
+    "bootstrap": "twbs/bootstrap#master",
+    "marked-element": "hubgit/marked-element#master",
+    "syntax-highlight": "hubgit/syntax-highlight#master",
+    "code-mirror": "hubgit/code-mirror#master",
+    "web-resource": "hubgit/web-resource#master",
+    "pouch-db": "hubgit/pouch-db#master",
+    "doc-leaves": "hubgit/doc-leaves#master",
+    "core-overlay": "Polymer/core-overlay",
+    "es6-promise": "components/es6-promise#~1.0.0"
+  },
+  "_release": "6fbb39994e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6fbb39994e20c15041f03f2845311ab9e0842d20"
+  },
+  "_source": "git://github.com/hubgit/vege-table.git",
+  "_target": "master",
+  "_originalSource": "hubgit/vege-table"
+}

@@ -1,0 +1,59 @@
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+:host.expanded {
+  max-width: 100%;
+}
+
+.panel-heading {
+  font-weight: 100;
+  margin: 0;
+  font-size: 25px;
+}
+
+.list-group {
+  font-size: 90%;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.list-group-item {
+  padding: 5px 15px;
+}
+
+.list-group-item:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.panel-body.export-actions {
+  padding-bottom: 0;
+}
+
+object.spotify {
+  height: 380px;
+}
+
+th {
+  white-space: nowrap;
+}
+
+td {
+  background: white;
+}
+
+.view-gallery {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.view-gallery a {
+  display: inline-block;
+  margin: 5px;
+}
+
+.view-gallery img {
+  max-height: 30rem;
+}

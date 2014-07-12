@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="vege-table-leaf" extends="td" attributes="type value leafName">
+
+  <template>
+    <!--<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">-->
+    <link rel="stylesheet" href="vege-table-leaf.css">
+
+    <div class="leaf-content-type-{{ type }}">
+      <template if="{{ !specialType }}"><div>{{ stringValue }}</div></template>
+
+      <template if="{{ specialType }}">
+        <template if="{{ type == 'json' }}">
+          <template if="{{ value &amp;&amp; (value.url || value['http://schema.org/url'] || value.name || value['http://schema.org/name']) }}">
+            <div class="leaf-seed-link">
+              <template if="{{ value.name || value['http://schema.org/name'] }}">
+                <template if="{{ value.url || value['http://schema.org/url'] }}">
+                  <a href="{{ value.url || value['http://schema.org/url'] }}" target="_blank" class="leaf-seed-name">{{ value.name || value['http://schema.org/name'] }}</a>
+                </template>
+                <template if="{{ !value.url &amp;&amp; !value['http://schema.org/url'] }}">
+                  <span class="leaf-seed-name">{{ value.name || value['http://schema.org/name'] }}</span>
+                </template>
+              </template>
+              <template if="{{ !value.name &amp;&amp; !value['http://schema.org/name'] }}">
+                <a href="{{ value.url || value['http://schema.org/url'] }}" target="_blank"><span class="glyphicon glyphicon-link"></span></a>
+              </template>
+            </div>
+          </template>
+        </template>
+
+        <template if="{{ value &amp;&amp; (type == 'html' || type == 'xml' || type == 'json') }}">
+          <!--<pre><code language="html" data-value="{{ stringValue }}"></code></pre>-->
+          <button class="show-object" on-click="{{ showObject }}">view</button>
+        </template>
+
+        <template if="{{ type == 'url' }}">
+          <a href="{{ value }}" target="_blank">{{ value }}</a>
+        </template>
+
+        <template if="{{ type == 'object' }}">
+          <object data="{{ value }}"></object>
+        </template>
+
+        <template if="{{ type == 'image' }}">
+          <a href="{{ value }}" target="_blank"><img src="{{ value }}"></img></a>
+        </template>
+
+        <template if="{{ type == 'element' }}">
+          <!-- TODO -->
+        </template>
+
+        <template if="{{ type == 'counts' }}">
+          <ul class="list-group">
+            <template repeat="{{ item in value }}">
+              <li class="list-group-item">
+                <span class="badge">{{ item.count }}</span>
+                <span>{{ item.name }}</span>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </template>
+
+      <!-- TODO -->
+      <div id="element"></div>
+    </div>
+  </template>
+
+  <script src="vege-table-leaf.js"></script>
+</polymer-element>

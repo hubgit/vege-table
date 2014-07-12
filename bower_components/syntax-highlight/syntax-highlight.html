@@ -1,0 +1,28 @@
+
+<!-- include polymer -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- include prism -->
+<script src="../prismjs/prism.js"></script>
+
+<!-- element -->
+<polymer-element name="syntax-highlight" extends="pre" attributes="language content">
+  <!-- template -->
+  <template><link rel="stylesheet" href="../prismjs/prism.css"><code id="content" class="language-{{language}}"></code></template>
+
+  <!-- script -->
+  <script>
+  Polymer('syntax-highlight', {
+    language: 'javascript',
+    content: '',
+    contentChanged: function() {
+      this.$.content.textContent = this.content;
+      Prism.highlightElement(this.$.content);
+    },
+    languageChanged: function() {
+      Prism.highlightElement(this.$.content);
+    }
+  });
+  </script>
+
+</polymer-element>

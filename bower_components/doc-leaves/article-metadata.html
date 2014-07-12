@@ -1,0 +1,98 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="article-title.html">
+<link rel="import" href="article-date.html">
+<link rel="import" href="article-author.html">
+<link rel="import" href="article-affiliation.html">
+
+<polymer-element name="article-metadata" attributes="storage">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+
+    <style>
+    :host {
+      display: block;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    ol, ul {
+      margin: 1rem 0;
+      padding-left: 0;
+      list-style-type: none
+    }
+
+    li {
+      padding-left: 0;
+    }
+
+    .inline-list {
+      list-style-type: none;
+    }
+
+    .inline-list > li {
+      display: inline-block;
+    }
+
+    .inline-list > li:not(:last-of-type):after {
+      content: ", ";
+    }
+
+    .btn .glyphicon {
+      margin-right: 0.5rem;
+    }
+    </style>
+
+    <header on-metadata-changed="{{ metadataChanged }}">
+      <article-title
+        value="{{ metadata.title }}"
+        storage="{{ storage }}"></article-title>
+
+      <article-date
+        value="{{ metadata.date }}"
+        storage="{{ storage }}"></article-date>
+
+      <ul class="list-inline">
+        <template repeat="{{ author, index in metadata.authors }}">
+          <li data-index="{{ index }}" on-remove-author="{{ removeAuthor }}">
+            <article-author
+              value="{{ author }}"
+              storage="{{ storage }}"
+              itemprop="creator"
+              itemscope itemtype="http://schema.org/Person"></article-author>
+          </li>
+        </template>
+      </ul>
+
+      <template if="{{ storage }}">
+        <button
+          type="button"
+          class="btn btn-default btn-xs"
+          on-click="{{ addAuthor }}"><span class="glyphicon glyphicon-plus-sign"></span>
+          <span class="glyphicon glyphicon-user"></span></button>
+      </template>
+
+      <ol>
+        <template repeat="{{ affiliation, index in metadata.affiliations }}">
+          <li data-index="{{ index }}" on-remove-affiliation="{{ removeAffiliation }}">
+            <article-affiliation
+              value="{{ affiliation }}"
+              storage="{{ storage }}"
+              itemscope itemtype="http://schema.org/Address"></article-affiliation>
+          </li>
+        </template>
+      </ol>
+
+      <!--
+      <template if="{{ storage }}">
+        <button
+          type="button"
+          class="btn btn-default btn-sm"
+          on-click="{{ addAffiliation }}"><span class="glyphicon glyphicon-plus-sign"></span>Add an affiliation</button>
+      </template>
+      -->
+    </header>
+  </template>
+
+  <script src="article-metadata.js"></script>
+</polymer-element>

@@ -1,0 +1,27 @@
+:host {
+  margin: 10px 0;
+  padding: 10px 15px;
+  display: block;
+}
+
+h3 {
+  color: rgb(108, 179, 134);
+  margin-top: 0;
+  font-weight: 200;
+}
+
+.leaf-preview {
+  margin: 10px 0;
+  max-height: 10em;
+  overflow-y: auto;
+}
+
+.function-header,
+.function-footer {
+  font-family: monospace;
+  color: gray;
+}
+
+pre.leaf-preview {
+  font-size: 80%;
+}

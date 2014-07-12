@@ -1,0 +1,133 @@
+/* TODO: collapse to icon */
+pre {
+  max-height: 10em;
+  min-width: 10em;
+  max-width: 30em;
+  overflow-y: auto;
+  overflow-x: auto;
+  font-size: 80%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  box-shadow: none;
+  white-space: pre;
+}
+
+:host > div {
+  max-height: 6em;
+  overflow-y: auto;
+}
+
+:host > div.leaf-content-type-object {
+  max-height: 15em;
+}
+
+:host > div.leaf-content-type-image {
+  max-height: 10em;
+  max-width: 10em;
+}
+
+.leaf-content-type-image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+object {
+  max-width: 20em;
+  min-height: 10px;
+}
+
+.list-group-item {
+  padding: 5px;
+  background: #F3F3F3;
+  clear: both;
+}
+
+.show-object {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.leaf-seed-link a {
+  display: inline-block;
+}
+
+.leaf-seed-name {
+  min-width: 10em;
+}
+
+.leaf-content-type-list > div {
+  white-space: pre;
+}
+
+.leaf-content-type-counts {
+  max-height: 10em;
+}
+
+/** .list-group, from Bootstrap */
+
+.list-group {
+  padding-left: 0;
+  margin-bottom: 20px;
+  margin-top: 0;
+  max-height: 12em;
+  overflow-y: auto;
+}
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 5px 10px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.list-group-item:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.list-group-item:last-child {
+  margin-bottom: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.list-group-item > .badge {
+  float: right;
+}
+.list-group-item > .badge + .badge {
+  margin-right: 5px;
+}
+a.list-group-item {
+  color: #555;
+}
+a.list-group-item:hover,
+a.list-group-item:focus {
+  color: #555;
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+  z-index: 2;
+  color: #fff;
+  background-color: #428bca;
+  border-color: #428bca;
+}
+.list-group-item.active .list-group-item-heading,
+.list-group-item.active:hover .list-group-item-heading,
+.list-group-item.active:focus .list-group-item-heading {
+  color: inherit;
+}
+.list-group-item.active .list-group-item-text,
+.list-group-item.active:hover .list-group-item-text,
+.list-group-item.active:focus .list-group-item-text {
+  color: #e1edf7;
+}
+
+.badge {
+  background-color: #ccc;
+  border-radius: 10px;
+  padding: 0px 10px;
+}

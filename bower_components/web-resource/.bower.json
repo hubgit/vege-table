@@ -1,0 +1,22 @@
+{
+  "name": "web-resource",
+  "main": "web-resource.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/hubgit/web-resource",
+  "_release": "47e63efaf5",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "47e63efaf5f2e49182872a3bef5a253a72765eeb"
+  },
+  "_source": "git://github.com/hubgit/web-resource.git",
+  "_target": "master",
+  "_originalSource": "hubgit/web-resource"
+}

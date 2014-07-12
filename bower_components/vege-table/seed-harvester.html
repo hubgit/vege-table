@@ -1,0 +1,162 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- syntax highlighting -->
+<link rel="import" href="../syntax-highlight/syntax-highlight.html">
+
+<!-- code editing -->
+<link rel="import" href="../code-mirror/code-mirror.html">
+
+<polymer-element name="seed-harvester" attributes="seed db progress">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="seed-harvester.css">
+
+    <template if="{{ progress == 'loading' }}">
+      <div class="alert alert-info">Loading&hellip;</div>
+    </template>
+
+    <!-- viewing -->
+    <template if="{{ !editing }}">
+      <div class="row">
+        <div class="col-md-4">
+          <template if="{{ seed.description }}">
+            <marked-element text="{{ seed.description }}"></marked-element>
+          </template>
+        </div>
+
+        <div class="col-md-8">
+          <!--
+          <template if="{{ seed.data }}">
+              <pre id="fetch"
+                   language="{{ seed.language }}">{{ seed.data }}</pre>
+          </template>
+          -->
+
+          <template if="{{ seed.code }}">
+              <pre is="syntax-highlight" id="code"
+                   language="javascript" content="{{ seed.code }}"></pre>
+          </template>
+
+          <span class="label label-info
+            label-type-{{ seed.language }}">{{ seed.language }}</span>
+
+          <template if="{{ db }}">
+            <div class="form-actions pull-right">
+              <button class="btn btn-primary" on-click="{{ openEditor }}"><span
+                class="glyphicon glyphicon-edit"></span> Edit seeds</button>
+              <template if="{{ seed.data }}">
+                <button type="submit" class="btn btn-primary" on-click="{{ plantSeeds }}">Plant seeds</button>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+
+    <!-- editing -->
+    <template if="{{ editing }}">
+      <form on-submit="{{ closeEditor }}">
+        <div class="form-group">
+          <label for="language">Type</label>
+
+          <select id="language" value="{{ editing.language }}">
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+            <option value="resource">Collection</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-8">
+            <template if="{{ editing.language == 'csv' }}">
+              <div class="form-group">
+                <textarea class="form-control" value="{{ editing.data }}" rows="10"></textarea>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'json' }}">
+              <div class="form-group">
+                <code-mirror language="{{ editing.language }}" value="{{ editing.data }}"></code-mirror>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'javascript'}}">
+              <div class="form-group">
+                <code-mirror language="{{ editing.language }}" value="{{ editing.code }}"></code-mirror>
+              </div>
+            </template>
+
+            <template if="{{ editing.language == 'resource'}}">
+              <div class="form-group">
+                <span class="input-group">
+                  <span class="input-group-addon">URL</span>
+                  <!-- TODO: autocomplete/search -->
+                  <input type="url" required class="form-control"
+                    value="{{ editing.url }}" placeholder="http://&hellip;">
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label for="format">Format</label>
+
+                <select id="format" value="{{ editing.format }}" required>
+                  <option></option>
+                  <option value="html">HTML</option>
+                  <option value="json">JSON</option>
+                  <option value="jsonld">JSON-LD</option>
+                  <option value="csv">CSV</option>
+                  <option value="xml">XML</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <div class="function-header">collection.items = function(document) {</div>
+                <code-mirror language="javascript" value="{{ editing.itemsSelector }}"></code-mirror>
+                <div class="function-footer">}</div>
+              </div>
+
+              <div class="form-group">
+                <div class="function-header">collection.next = function(document) {</div>
+                <code-mirror language="javascript" value="{{ editing.nextSelector }}"></code-mirror>
+                <div class="function-footer">}</div>
+              </div>
+            </template>
+
+            <!-- description -->
+            <div class="form-group">
+              <label for="description">Description</label>
+
+              <code-mirror
+                value="{{ editing.description }}"
+                mode="markdown"
+                lineNumbers="true"
+                lineWrapping="true"></code-mirror>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-danger" on-click="{{ clearItems }}"><span class="glyphicon glyphicon-trash"></span> Clear items</button>
+              <button type="button" class="btn btn-danger" on-click="{{ cancelEditor }}">Cancel</button>
+              <button type="button" class="btn btn-warning" on-click="{{ generatePreview }}">Preview</button>
+              <button type="submit" class="btn btn-primary" on-click="{{ saveSeeds }}">Plant seeds</button>
+            </div>
+          </div>
+
+          <div class="col-sm-4">
+            <!-- previews -->
+            <template if="{{ preview }}">
+              <pre is="syntax-highlight" id="preview" class="seed-preview"
+                   language="json" content="{{ preview }}"></pre>
+            </template>
+          </div>
+        </div>
+      </form>
+    </template>
+
+    <template if="{{ error }}">
+      <div class="alert alert-error">{{ error }}</div>
+    </template>
+  </template>
+
+  <script src="seed-harvester.js"></script>
+</polymer-element>

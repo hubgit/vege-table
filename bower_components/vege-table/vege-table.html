@@ -1,0 +1,348 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script src="../es6-promise/promise.js"></script>
+
+<link rel="import" href="../marked-element/marked-element.html">
+<link rel="import" href="../web-resource/web-resource.html">
+<link rel="import" href="../doc-leaves/article-metadata.html">
+<link rel="import" href="../core-overlay/core-overlay.html">
+
+<link rel="import" href="seed-harvester.html">
+<link rel="import" href="leaf-builder.html">
+<link rel="import" href="leaf-miner.html">
+<link rel="import" href="vege-table-leaf.html">
+<link rel="import" href="tuber-storage.html">
+<link rel="import" href="data-view.html">
+
+<polymer-element name="vege-table" attributes="db descriptionFile dataFile items leaves">
+  <template>
+    <link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="vege-table.css">
+
+    <article-metadata storage="{{ db }}"></article-metadata>
+
+    <tuber-storage id="storage" storage="{{ db }}"
+      seed="{{ seed }}"
+      leaves="{{ leaves }}"
+      items="{{ items }}"
+      views="{{ views }}"
+      progress="{{ progress }}"></tuber-storage>
+
+    <!-- leaf-miner -->
+    <leaf-miner id="miner"
+      items="{{ items }}"
+      leaves="{{ leaves }}"
+      on-item-changed="{{ updateItem }}"
+      on-leaf-complete="{{ leafComplete }}">
+    </leaf-miner>
+
+    <resource-queue></resource-queue>
+
+    <!-- seed harvester -->
+    <section class="panel panel-default">
+      <h2 class="panel-heading">Seeds</h2>
+
+      <!-- item builder -->
+      <div class="panel-body">
+        <seed-harvester id="harvester"
+          seed="{{ seed }}"
+          db="{{ db }}"
+          progress="{{ progress.seed }}"
+          on-seed-changed="{{ saveSeed }}"
+          on-add-items="{{ addItems }}"
+          on-clear-items="{{ clearItems }}"></seed-harvester>
+      </div>
+    </section>
+
+    <template if="{{ db }}">
+      <div class="panel-action">
+        <button type="button" class="btn btn-default btn-xs"
+          on-click="{{ addView }}"><span
+          class="glyphicon glyphicon-plus-sign"></span> Add a view</button>
+      </div>
+    </template>
+
+    <div class="{{ { row: views.length } | tokenList }}">
+      <div class="{{ { 'col-md-3': views.length } | tokenList }}" id="views-column">
+        <!-- views -->
+        <template repeat="{{ view, index in views }}">
+          <template if="{{ view.type != 'map' &amp;&amp; view.type != 'grid' &amp;&amp; view.type != 'gallery' }}">
+            <data-view
+              view="{{ view }}"
+              items="{{ displayItems }}"
+              leaves="{{ leaves }}"
+              storage="{{ db }}"
+              filter="{{ filter }}"
+              data-view-index="{{ index }}"
+              on-remove-view="{{ removeView }}"
+              on-view-changed="{{ saveViews }}"
+              on-filter="{{ filterTable }}"
+              on-export-items="{{ exportItems }}"></data-view>
+          </template>
+        </template>
+      </div>
+
+      <div class="{{ { 'col-md-9': views.length } | tokenList }}" id="data-column">
+        <!-- wide views -->
+        <template repeat="{{ view, index in views }}">
+          <template if="{{ view.type == 'map' || view.type == 'grid' || view.type == 'gallery' }}">
+            <data-view
+              view="{{ view }}"
+              items="{{ displayItems }}"
+              leaves="{{ leaves }}"
+              storage="{{ db }}"
+              filter="{{ filter }}"
+              data-view-index="{{ index }}"
+              on-remove-view="{{ removeView }}"
+              on-view-changed="{{ saveViews }}"
+              on-filter="{{ filterTable }}"
+              on-export-summary="{{ exportSummary }}"
+              on-export-values="{{ exportValues }}"></data-view>
+          </template>
+        </template>
+
+        <!-- vege-table -->
+        <template if="{{ items.length }}">
+          <section class="panel panel-default">
+            <h2 class="panel-heading">Data</h2>
+
+              <div class="panel-body">
+                <div>
+                  <span>Items {{ startIndex + 1 }}-{{ endIndex + 1 }} of {{ itemCount }}</span>
+
+                  <span class="pull-right">
+                    <select value="{{ indexLimit }}">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>100</option>
+                        <!-- TODO: generate up to max item length -->
+                      </select> per page</span>
+                </div>
+
+                <div><input value="{{ page }}" type="range" min="1" max="{{ pages }}"></div>
+              </div>
+
+              <table class="table">
+                <caption><!-- TODO --></caption>
+
+                <!-- TODO: allow columns to be resized - set width style here -->
+                <colgroup>
+                  <template repeat="{{ leaves }}">
+                    <col span="1" width="0*">
+                  </template>
+                </colgroup>
+
+                <thead>
+                  <tr>
+                    <th class="leaf-type-json">Seed</th>
+                    <template repeat="{{ leaf in leaves }}">
+                    <th class="leaf-type-{{ leaf.type }} leaf-title">{{ leaf.title }}</th>
+                    </template>
+                  </tr>
+
+                  <tr class="table-actions">
+                    <th></th>
+                    <template repeat="{{ leaf in leaves }}">
+                    <th>
+                      <!-- TODO: set 'sortable'? -->
+                      <template if="{{ leaf.type === 'text' || leaf.type === 'identifier' }}">
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-alphabet"></span></button>
+
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-alphabet-alt"></span></button>
+                      </template>
+
+                      <template if="{{ leaf.type === 'number' || leaf.type === 'float' }}">
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-order"></span></button>
+
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-order-alt"></span></button>
+                      </template>
+
+                      <template if="{{ leaf.type === 'date' }}">
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="asc"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+
+                        <button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ sortLeaf }}"
+                          data-leaf-name="{{ leaf.name }}"
+                          data-leaf-sort="desc"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                      </template>
+                    </th>
+                    </template>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <template repeat="{{ item, index in tableItems }}">
+                      <tr>
+                        <td is="vege-table-leaf" class="leaf-type-json"
+                            value="{{ item.seed }}"
+                            on-show-object="{{ showObject }}"
+                            leafName="seed"
+                            type="json"></td>
+
+                        <template repeat="{{ leaf in leaves }}">
+                          <td is="vege-table-leaf"
+                            class="leaf-type-{{ leaf.type }}"
+                            value="{{ item[leaf.name] }}"
+                            leafName="{{ leaf.name }}"
+                            on-show-object="{{ showObject }}"
+                            type="{{ leaf.type }}"></td>
+                        </template>
+                      </tr>
+                  </template>
+                </tbody>
+
+                <tfoot class="summaries">
+                  <tr class="table-move">
+                    <th></th>
+
+                    <template repeat="{{ leaf in leaves }}">
+                      <td>
+                        <template if="{{ leaf.index > 0 }}">
+                          <button type="button"
+                            class="btn btn-xs btn-default"
+                            on-click="{{ moveLeaf }}"
+                            data-leaf-name="{{ leaf.name }}"
+                            data-leaf-move="left">&larr;</button>
+                        </template>
+
+                        <template if="{{ leaf.index < leaves.length - 1 }}">
+                          <button type="button"
+                            class="btn btn-xs btn-default"
+                            on-click="{{ moveLeaf }}"
+                            data-leaf-name="{{ leaf.name }}"
+                            data-leaf-move="right">&rarr;</button>
+                        </template>
+                      </td>
+                    </template>
+                  </tr>
+
+                  <tr class="table-actions">
+                    <th></th>
+
+                    <template repeat="{{ leaf in leaves }}">
+                      <td>
+                        <span class="badge {{ { 'alert-success': leaf.complete == items.length } | tokenList }}">{{ leaf.complete }}</span>
+
+                        <!--<button type="button"
+                          class="btn btn-xs btn-default"
+                          on-click="{{ summariseLeaf }}"
+                          data-leaf-name="{{ leaf.name }}">Sum</button>-->
+
+                        <!--
+                        <template if="{{ db }}">
+                          <button class="btn btn-xs btn-danger" on-click="{{ clearLeaf }}" data-leaf-name="{{ leaf.name }}">Clear</button>
+                        </template>
+                        -->
+                      </td>
+                    </template>
+                  </tr>
+
+                  <!--
+                  <template repeat="{{ summariser, summariserIndex in summarisers }}">
+                    <tr>
+                      <th>{{ summariser.label }}</th>
+
+                      <template repeat="{{ summary, summaryIndex in summariser.summaries }}">
+                        <td>
+                          <template if="{{ summary }}">
+                            <template if="{{ summariser.type != 'list' &amp;&amp; summariser.type != 'counts' }}">
+                              <div>{{ summary }}</div>
+                            </template>
+                          </template>
+                        </td>
+                      </template>
+                    </tr>
+                  </template>
+                  -->
+                </tfoot>
+              </table>
+          </section>
+        </template>
+      </div>
+    </div>
+
+    <!-- leaf-builder -->
+    <template if="{{ leaves.length || items.length }}">
+      <section class="panel panel-default">
+        <h2 class="panel-heading">Leaves</h2>
+
+          <leaf-builder
+            id="builder"
+            items="{{ items }}"
+            leaves="{{ leaves }}"
+            db="{{ db }}"
+            progress="{{ progress.leaves }}"
+            on-fetch-leaf="{{ fetchLeaf }}"
+            on-fetch-leaf-blanks="{{ fetchLeafBlanks }}"
+            on-leaf-added="{{ addLeaf }}"
+            on-leaf-changed="{{ updateLeaf }}"
+            on-leaf-removed="{{ removeLeaf }}"></leaf-builder>
+      </section>
+    </template>
+
+    <template if="{{ db }}">
+      <section class="panel panel-default">
+        <h2 class="panel-heading">Import / Export</h2>
+
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h3>Import Description</h3>
+              <div><input type="file" on-change="{{ importDescriptionFile }}"></div>
+
+              <h3>Import Data</h3>
+              <div><input type="file" on-change="{{ importDataFile }}"></div>
+            </div>
+
+            <div class="col-md-4">
+              <div>
+                <h3>Export</h3>
+                <button type="button" class="btn btn-default" on-click="{{ export }}">Export files</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </template>
+
+      <core-overlay id="overlay">
+        <div id="preview">
+          <table class="table">
+            <template repeat="{{ item in leafPicker.items }}">
+              <tr>
+                <th class="preview-key"
+                  on-click="{{ addSuggestedLeaf }}"
+                  data-path="{{ leafPicker.path }}"
+                  data-key="{{ item.key }}">{{ item.key }}</th>
+                <td>{{ item.value }}</td>
+              </tr>
+            </template>
+          </table>
+        </div>
+      </core-overlay>
+  </template>
+
+  <script src="vege-table.js"></script>
+</polymer-element>
