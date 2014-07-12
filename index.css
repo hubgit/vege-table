@@ -1,49 +1,34 @@
 body {
-  font-family: Helvetica, Arial, sans-serif;
-  padding: 2rem;
+  background-color: #eee;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 article {
-  max-width: 60rem;
-  margin: 0 auto;
+  padding: 10px;
 }
 
-header p {
-  font-size: 120%;
+header, section, main {
+  min-height: 4em;
+  clear: both;
+}
+
+h2, h3, h4, h5, h6 {
+  font-weight: 100;
 }
 
 h1 {
-  font-size: 3rem;
-  font-weight: 100;
-  margin: 0;
+  font-weight: 200;
 }
 
 h2 {
-  font-size: 200%;
-  font-weight: 400;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
+  border-bottom: 2px solid rgb(127, 202, 127);
 }
 
-figure {
-  margin: 1rem;
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-figure img {
-  max-width: 100%;
-  display: block;
-}
-
-.danger {
-  color: red;
-}
-
-.number {
-  background: #eed;
-  border-radius: 10em;
-  text-align: center;
-  padding: 0 10px;
-  margin-right: 10px;
-  display: inline-block;
-  vertical-align: text-top;
+.loading {
+  display: none;
 }

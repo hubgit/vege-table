@@ -1,0 +1,91 @@
+<polymer-element name="database-list">
+  <template>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+
+    <style>
+    ul {
+      padding-left: 0;
+      margin-top: 2rem;
+    }
+
+    li {
+      display: flex;
+      list-style-type: none;
+      margin-bottom: 0.5rem;
+    }
+
+    form {
+      margin: 2rem 0 2rem;
+    }
+
+    .name {
+      flex: 1;
+      line-height: 2em;
+      vertical-align: middle;
+    }
+    </style>
+
+    <form on-submit="{{ createDatabase }}" class="form-horizontal">
+      <fieldset>
+        <legend>Create a new project</legend>
+
+        <div class="form-group">
+          <label for="db-name" class="control-label col-sm-2">Project ID</label>
+
+          <div class="controls col-sm-10">
+            <div class="input-group">
+              <input id="db-name" class="form-control" value="{{ newDbName }}"
+                placeholder="e.g. example-project">
+
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">Create project</button>
+              </span>
+            </div>
+            <p class="help-block">Note: all the data for the project will be stored locally on your computer.</p>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+
+    <ul>
+      <template repeat="{{ db, index in config.dbs }}">
+        <li>
+          <a href="./?db={{ db.name }}" class="name">{{ db.name }}</a>
+
+          <button type="button" class="btn btn-danger"
+            data-db-index="{{ index }}"
+            on-click="{{ deleteDatabase }}">Delete</button>
+        </li>
+      </template>
+    </ul>
+
+    <div class="row">
+      <form action="./" class="col-sm-6">
+        <fieldset>
+          <legend>Load from a Gist</legend>
+          <div class="input-group">
+            <input type="text" name="gist" class="form-control" placeholder="Gist ID">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-default">Load</button>
+            </span>
+          </div>
+        </fieldset>
+      </form>
+
+      <form action="./" class="col-sm-6">
+        <fieldset>
+          <legend>Load from a URL</legend>
+          <div class="input-group">
+            <input type="url" name="url" class="form-control" placeholder="description.json URL">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-default">Load</button>
+            </span>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </template>
+
+  <script src="bower_components/pouch-db/pouchdb.js"></script>
+  <script src="database-list.js"></script>
+</polymer-element>
