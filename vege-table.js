@@ -42,7 +42,7 @@ Polymer('vege-table', {
     var params = this.readParameters();
 
     if (params.db) {
-      this.db = params.db;
+      this.db = params.db.replace(/\/$/, '');
     }
 
     if (!this.db) {
@@ -64,7 +64,7 @@ Polymer('vege-table', {
           }
         }.bind(this));
       } else {
-        this.loadDescriptionFile();
+        window.location.href = 'about.html';
       }
     }
   },
