@@ -1,0 +1,9 @@
+{
+  "name": "grocery-store",
+  "version": "0.0.1",
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.3.3",
+    "vege-table": "hubgit/vege-table#master",
+    "leaflet-map": "hubgit/leaflet-map#master"
+  }
+}
