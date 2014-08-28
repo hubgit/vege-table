@@ -730,7 +730,7 @@ Polymer('vege-table', {
           return '"' + cell.replace(/"/g, '""') + '"';
         }
 
-        if (cell.indexOf('\n') !== -1) {
+        if (cell.indexOf('\n') !== -1 || cell.indexOf(',') !== -1) {
           return '"' + cell + '"';
         }
 
