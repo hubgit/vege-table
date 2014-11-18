@@ -91,10 +91,17 @@ Request.prototype.run = function() {
                 case 403: // rate-limited or forbidden
                 case 429: // rate-limited
                     var delay = this.rateLimitDelay(xhr);
-                    console.log('Rate-limited: sleeping for', delay, 'seconds');
-                    this.queue.stop(delay * 1000);
-                    this.queue.items.unshift(this.run.bind(this)); // add this request back on to the start of the queue
-                    //this.deferred.notify('rate-limit');
+                    
+                    if (delay === -1) {
+                        console.log('Forbidden!');
+                        this.queue.stop();
+                    } else {
+                        console.log('Rate-limited: sleeping for', delay, 'seconds');
+                        this.queue.stop(delay * 1000);
+                        this.queue.items.unshift(this.run.bind(this)); // add this request back on to the start of the queue
+                        //this.deferred.notify('rate-limit');
+                    }
+                
                     reject();
                     break;
 
@@ -141,6 +148,12 @@ Request.prototype.run = function() {
 };
 
 Request.prototype.rateLimitDelay = function(xhr) {
+    var remaining = xhr.getResponseHeader('x-rate-limit-remaining');
+    
+    if (remaining) {
+        return -1;
+    }
+    
     var reset = xhr.getResponseHeader('x-rate-limit-reset');
 
     if (!reset) {
