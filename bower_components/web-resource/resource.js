@@ -73,7 +73,7 @@ Resource.prototype.prepareResponseType = function(responseType) {
     return responseType;
 };
 
-Resource.prototype.get = function(responseType, headers) {
+Resource.prototype.get = function(responseType, headers, overrides) {
     //TODO: allow { priority: true } as options parameter?
 
     var options = {
@@ -81,6 +81,12 @@ Resource.prototype.get = function(responseType, headers) {
         headers: this.prepareHeaders(headers, responseType),
         responseType: this.prepareResponseType(responseType),
     };
+    
+    if (overrides) {
+        Object.keys(overrides).forEach(function(key) {
+           options[key] = overrides[key];
+        });
+    }
 
     console.log('request', options);
 
