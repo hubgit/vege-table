@@ -47,7 +47,10 @@ Request.prototype.enqueue = function() {
         this.queue = queues[queueName];
 
         if (!this.queue) {
-            this.queue = new Queue({ name: queueName });
+            this.queue = new Queue({ 
+                name: queueName,
+                rateLimit: this.delay.server,
+            });
             queues[queueName] = this.queue;
             queuesList.push(this.queue);
         }
