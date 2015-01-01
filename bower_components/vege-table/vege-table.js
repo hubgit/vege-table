@@ -733,6 +733,10 @@ Polymer('vege-table', {
         if (cell.indexOf('\n') !== -1) {
           return '"' + cell + '"';
         }
+        
+        if (cell.indexOf(',') !== -1) {
+          return '"' + cell + '"';
+        }
 
         return cell;
       };
