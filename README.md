@@ -16,7 +16,7 @@ Pre-alpha. To create vege-tables you need to be able to write functions in JavaS
 
 ## Getting started
 
-The easiest way to get started is to use the [vege-table](https://github.com/hubgit/vege-table/projects.html) web interface to create projects.
+The easiest way to get started is to use the [vege-table](https://git.macropus.org/vege-table/projects.html) web interface to create projects.
 
 Alternatively - or if you'd like to help with development - follow the full instructions below.
 
