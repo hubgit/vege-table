@@ -3,7 +3,7 @@
 'use strict';
 
 Polymer('leaflet-map', {
-  tiles: 'http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg',
+  tiles: 'https://stamen-tiles-{S}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
   height: '500px',
   width: '100%',
   lat: 51.5,
